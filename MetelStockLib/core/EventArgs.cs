@@ -159,4 +159,18 @@ namespace MetelStockLib.core
             this.Message = "관심종목이 제거 되었습니다.";
         }
     }
+
+    public class OnReceivedStockItemsEventArgs : EventArgs
+    {
+        public string EventName { get; set; }
+        public List<StockItem> StockItemList { get; set; }
+        public string Message { get; set; }
+
+        public OnReceivedStockItemsEventArgs(string eventName, List<StockItem> stockItemList)
+        {
+            this.EventName = eventName;
+            this.StockItemList = stockItemList;
+            this.Message = "종목 정보를 가져왔습니다";
+        }
+    }
 }

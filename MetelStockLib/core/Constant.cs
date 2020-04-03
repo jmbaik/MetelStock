@@ -13,6 +13,9 @@ namespace MetelStockLib.core
         public const string 주식일봉차트조회요청 = "주식일봉차트조회요청"; //opt10081
         public const string 주식분봉차트조회요청 = "주식분봉차트조회요청"; //opt10080
         public const string 계좌평가현황요청 = "계좌평가현황요청"; //OPW00004
+        public const string 당일거래량상위요청 = "당일거래량상위요청"; // opt10030
+        public const string 전일거래량상위요청 = "전일거래량상위요청"; // opt10031
+
     }
 
     public static class ErrorCode

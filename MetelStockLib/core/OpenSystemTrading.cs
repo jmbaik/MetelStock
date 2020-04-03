@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +29,10 @@ namespace MetelStockLib.core
         public event EventHandler<OnChangedGroupNameEventArgs> OnChangedGroupName; //관심 그룹명 변경 시
         public event EventHandler<OnAddInterestItemEventArgs> OnAddInterestItem; //관심종목 추가 시
         public event EventHandler<OnRemoveInterestItemEventArgs> OnRemoveInterestItem; //관심종목 제거 시
+
+        // 추가 이벤트 
+        public event EventHandler<OnReceivedStockItemsEventArgs> OnReceivedStockItems; //관심종목 제거 시
+        public event EventHandler<EventArgs> OnLoged; // 로그온이후 
 
         private static int screenNum = 5000;
 
@@ -97,6 +102,7 @@ namespace MetelStockLib.core
             {
                 GetUserInfo();
                 SendLogMessage("로그인 성공");
+                OnLoged?.Invoke(this, new EventArgs());
             }
             else if (e.nErrCode == ErrorCode.사용자정보교환실패)
                 SendLogMessage("로그인 실패 : 사용자 정보교환 실패");
@@ -135,8 +141,9 @@ namespace MetelStockLib.core
                 OnReceivedChartData?.Invoke(this, new OnReceivedChartDataEventArgs(itemCode, itemName, chartDataList, hasNext));
                 SendLogMessage(itemName + " 주식틱차트조회요청 결과 수신");
             }
-            else if (e.sRQName.Equals(RqName.주식일봉차트조회요청))
+            else if (e.sRQName.Equals(RqName.주식일봉차트조회요청) || e.sRQName.Equals(RqName.주식분봉차트조회요청))
             {
+                string dayminute = e.sRQName.Equals(RqName.주식일봉차트조회요청) ? "D" : "M";
                 string itemCode = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, 0, "종목코드").Trim();
                 string itemName = axKHOpenAPI.GetMasterCodeName(itemCode);
 
@@ -145,7 +152,11 @@ namespace MetelStockLib.core
                 List<ChartData> chartDataList = new List<ChartData>();
                 for (int i = 0; i < cnt; i++)
                 {
-                    string time = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "일자").Trim();
+                    string time = "";
+                    if(dayminute.Equals("D"))
+                        time = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "일자").Trim();
+                    else
+                        time = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "체결시간").Trim();
                     long closePrice = Math.Abs(long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "현재가")));
                     long openPrice = Math.Abs(long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "시가")));
                     long highPrice = Math.Abs(long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "고가")));
@@ -160,7 +171,10 @@ namespace MetelStockLib.core
                     hasNext = true;
 
                 OnReceivedChartData?.Invoke(this, new OnReceivedChartDataEventArgs(itemCode, itemName, chartDataList, hasNext));
-                SendLogMessage(itemName + " 주식일봉차트조회요청 결과 수신");
+                if(dayminute.Equals("D"))
+                    SendLogMessage(itemName + " 주식일봉차트조회요청 결과 수신");
+                else
+                    SendLogMessage(itemName + " 주식분봉차트조회요청 결과 수신");
             }
             else if (e.sRQName.Equals(RqName.계좌평가현황요청))
             {
@@ -230,7 +244,41 @@ namespace MetelStockLib.core
                 {
                     Console.WriteLine(exception.Message);
                 }
-            }
+            }else if (e.sRQName.Equals(RqName.당일거래량상위요청) || e.sRQName.Equals(RqName.전일거래량상위요청))
+            {
+                try
+                {
+                    int cnt = axKHOpenAPI.GetRepeatCnt(e.sTrCode, e.sRQName);
+
+                    List<StockItem> stockList = new List<StockItem>();
+                    for (int i = 0; i < cnt; i++)
+                    {
+                        string itemCode = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "종목코드").Trim();
+                        string itemName = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "종목명").Trim();
+                        long currentPrice = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "현재가"));
+                        long netChange = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "전일대비"));
+                        double updownRate = double.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "등락률"));
+                        long volume = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "거래량"));
+
+                        StockItem stockItem = new StockItem()
+                        {
+                            ItemCode = itemCode,
+                            ItemName = itemName,
+                            Price = currentPrice,
+                            NetChange = netChange,
+                            UpDownRate = updownRate,
+                            Volume = volume     
+                        };
+                        stockList.Add(stockItem);
+                    }
+
+                    OnReceivedStockItems?.Invoke(this, new OnReceivedStockItemsEventArgs(e.sRQName, stockList));
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+            } 
         }
 
         public void RequestItemInfo(string itemCode) //주식기본정보요청 : opt10001
@@ -350,6 +398,88 @@ namespace MetelStockLib.core
             });
 
             requestTrDataManager.RequestTrData(requestAccountBalanceTask);
+        }
+
+        public void RequestHighTodayVolume(string marketType, string sortBy="3")
+        {
+            Task requestTask = new Task(() =>
+            {
+                string _mt = "";
+                switch (marketType)
+                {
+                    case "전체":
+                        _mt = "000";
+                        break;
+                    case "코스피":
+                        _mt = "001";
+                        break;
+                    case "코스닥":
+                        _mt = "100";
+                        break;
+                    default:
+                        break;
+                }
+                axKHOpenAPI.SetInputValue("시장구분", _mt);
+                axKHOpenAPI.SetInputValue("정렬구분", sortBy);  // 1: 거래량, 2: 거래회전율, 3: 거래대금
+                axKHOpenAPI.SetInputValue("관리종목포함", "5"); // 증거금100 제외
+                axKHOpenAPI.SetInputValue("신용구분", "0");
+                axKHOpenAPI.SetInputValue("거래량구분", "0");
+                axKHOpenAPI.SetInputValue("가격구분", "0");
+                axKHOpenAPI.SetInputValue("거래대금구분", "0");
+                axKHOpenAPI.SetInputValue("장운영구분", "0");
+
+                int result = axKHOpenAPI.CommRqData(RqName.당일거래량상위요청, "opt10030", 0, GetScreenNum());
+
+                if (result == ErrorCode.정상처리)
+                {
+                    Console.WriteLine("당일거래량상위요청 성공");
+                }
+                else
+                {
+                    Console.WriteLine("당일거래량상위요청 실패");
+                }
+            });
+
+            requestTrDataManager.RequestTrData(requestTask);
+        }
+
+        public void RequestHighYesterDayVolume(string marketType, string sortBy = "2")
+        {
+            Task requestTask = new Task(() =>
+            {
+                string _mt = "";
+                switch (marketType)
+                {
+                    case "전체":
+                        _mt = "000";
+                        break;
+                    case "코스피":
+                        _mt = "001";
+                        break;
+                    case "코스닥":
+                        _mt = "100";
+                        break;
+                    default:
+                        break;
+                }
+                axKHOpenAPI.SetInputValue("시장구분", _mt);
+                axKHOpenAPI.SetInputValue("조회구분", sortBy);  // 조회구분 = 1:전일거래량 상위100종목, 2:전일거래대금 상위100종목
+                axKHOpenAPI.SetInputValue("순위시작", "0"); // 증거금100 제외
+                axKHOpenAPI.SetInputValue("순위끝", "100");
+
+                int result = axKHOpenAPI.CommRqData(RqName.전일거래량상위요청, "opt10031", 0, GetScreenNum());
+
+                if (result == ErrorCode.정상처리)
+                {
+                    Console.WriteLine("전일거래량상위요청 성공");
+                }
+                else
+                {
+                    Console.WriteLine("전일거래량상위요청 실패");
+                }
+            });
+
+            requestTrDataManager.RequestTrData(requestTask);
         }
 
 

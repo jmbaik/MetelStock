@@ -33,6 +33,9 @@
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.metChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.lab_Y_Axis_cur = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.metChart)).BeginInit();
@@ -40,11 +43,11 @@
             // 
             // metChart
             // 
-            this.metChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             chartArea1.AxisX.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.False;
-            chartArea1.AxisX.IsReversed = true;
+            chartArea1.AxisX.IsLabelAutoFit = false;
+            chartArea1.AxisY.IsStartedFromZero = false;
+            chartArea1.CursorX.IsUserEnabled = true;
+            chartArea1.CursorX.IsUserSelectionEnabled = true;
             chartArea1.Name = "priceChartArea";
             chartArea1.Position.Auto = false;
             chartArea1.Position.Height = 63F;
@@ -52,7 +55,7 @@
             chartArea1.Position.X = 3F;
             chartArea1.Position.Y = 3F;
             chartArea2.AlignWithChartArea = "priceChartArea";
-            chartArea2.AxisX.IsReversed = true;
+            chartArea2.AxisY.IsStartedFromZero = false;
             chartArea2.Name = "volumeChartArea";
             chartArea2.Position.Auto = false;
             chartArea2.Position.Height = 30F;
@@ -61,7 +64,8 @@
             chartArea2.Position.Y = 70F;
             this.metChart.ChartAreas.Add(chartArea1);
             this.metChart.ChartAreas.Add(chartArea2);
-            this.metChart.Location = new System.Drawing.Point(32, 26);
+            this.metChart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.metChart.Location = new System.Drawing.Point(0, 0);
             this.metChart.Name = "metChart";
             series1.ChartArea = "priceChartArea";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Candlestick;
@@ -74,10 +78,28 @@
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series3.Color = System.Drawing.Color.Red;
             series3.Name = "maSeries";
+            series4.BorderWidth = 2;
+            series4.ChartArea = "priceChartArea";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series4.Color = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            series4.Name = "maSeries60";
+            series5.BorderWidth = 2;
+            series5.ChartArea = "priceChartArea";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series5.Color = System.Drawing.Color.Green;
+            series5.Name = "maSeries120";
+            series6.BorderWidth = 2;
+            series6.ChartArea = "priceChartArea";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series6.Color = System.Drawing.Color.Purple;
+            series6.Name = "maSeries240";
             this.metChart.Series.Add(series1);
             this.metChart.Series.Add(series2);
             this.metChart.Series.Add(series3);
-            this.metChart.Size = new System.Drawing.Size(1432, 935);
+            this.metChart.Series.Add(series4);
+            this.metChart.Series.Add(series5);
+            this.metChart.Series.Add(series6);
+            this.metChart.Size = new System.Drawing.Size(1490, 994);
             this.metChart.TabIndex = 0;
             this.metChart.Text = "chart1";
             // 
