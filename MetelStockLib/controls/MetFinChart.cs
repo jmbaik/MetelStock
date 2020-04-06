@@ -225,9 +225,13 @@ namespace MetelStockLib.controls
                 }
 
                 metChart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "20", "priceSeries:Y4", "maSeries:Y");
+                /*
+                metChart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "5", "priceSeries:Y4", "maSeries5:Y");
+                metChart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "10", "priceSeries:Y4", "maSeries10:Y");
                 metChart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "60", "priceSeries:Y4", "maSeries60:Y");
                 metChart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "120", "priceSeries:Y4", "maSeries120:Y");
                 metChart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "240", "priceSeries:Y4", "maSeries240:Y");
+                */
             }
             catch (Exception exception)
             {

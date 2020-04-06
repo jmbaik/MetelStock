@@ -58,6 +58,65 @@ namespace MetelStockLib.core
 
             axKHOpenAPI.OnEventConnect += AxKHOpenAPI_OnEventConnect;
             axKHOpenAPI.OnReceiveTrData += AxKHOpenAPI_OnReceiveTrData;
+            //추가 
+            axKHOpenAPI.OnReceiveRealData += AxKHOpenAPI_OnReceiveRealData;
+        }
+
+        private void AxKHOpenAPI_OnReceiveRealData(object sender, _DKHOpenAPIEvents_OnReceiveRealDataEvent e)
+        {
+            if (e.sRealType.Equals("주식체결"))
+            {
+                string item_cd = e.sRealKey;
+                string 체결시간 = axKHOpenAPI.GetCommRealData(item_cd, 20); //체결시간
+                string 현재가 = axKHOpenAPI.GetCommRealData(item_cd, 10); //현재가
+                string 전일대비 = axKHOpenAPI.GetCommRealData(item_cd, 11); //전일대비
+                string 등락율 = axKHOpenAPI.GetCommRealData(item_cd, 12); 
+                string 시가 = axKHOpenAPI.GetCommRealData(item_cd, 16);
+                string 고가 = axKHOpenAPI.GetCommRealData(item_cd, 17);
+                string 저가 = axKHOpenAPI.GetCommRealData(item_cd, 18);
+                string 최우선매도호가 = axKHOpenAPI.GetCommRealData(item_cd, 27);
+                string 최우선매수호가 = axKHOpenAPI.GetCommRealData(item_cd, 28);
+                string 거래량 = axKHOpenAPI.GetCommRealData(item_cd, 15);
+                string 누적거래량 = axKHOpenAPI.GetCommRealData(item_cd, 13);
+                string 누적거래대금 = axKHOpenAPI.GetCommRealData(item_cd, 14);
+
+                string 전일대비기호 = axKHOpenAPI.GetCommRealData(item_cd, 25);
+                string 전일거래량대비 = axKHOpenAPI.GetCommRealData(item_cd, 26);
+                string 거래대금증감 = axKHOpenAPI.GetCommRealData(item_cd, 29);
+                string 전일거래량대비비율 = axKHOpenAPI.GetCommRealData(item_cd, 30);
+                string 거래회전율 = axKHOpenAPI.GetCommRealData(item_cd, 31);
+                string 거래비용 = axKHOpenAPI.GetCommRealData(item_cd, 32);
+                string 체결강도 = axKHOpenAPI.GetCommRealData(item_cd, 228);
+                string 시가총액 = axKHOpenAPI.GetCommRealData(item_cd, 311);
+                string 장구분 = axKHOpenAPI.GetCommRealData(item_cd, 290);
+
+
+                string str = item_cd;
+                str += "체결시간 : " + 체결시간;
+                str += "현재가 : " + 현재가;
+                str += "전일대비 : " + 전일대비;
+                str += "등락율 : " + 등락율;
+                str += "시가 : " + 시가;
+                str += "고가 : " + 고가;
+                str += "저가 : " + 저가;
+                str += "거래량 : " + 거래량;
+                str += "체결강도 : " + 체결강도;
+                str += "장구분 : " + 장구분;
+                str += "최우선매도호가 : " + 최우선매도호가;
+                str += "최우선매수호가 : " + 최우선매수호가;
+                str += "누적거래량 : " + 누적거래량;
+                str += "누적거래대금 : " + 누적거래대금;
+                str += "전일대비기호 : " + 전일대비기호;
+                str += "전일거래량대비 : " + 전일거래량대비;
+                str += "거래대금증감 : " + 거래대금증감;
+                str += "전일거래량대비비율 : " + 전일거래량대비비율;
+                str += "거래회전율 : " + 거래회전율;
+                str += "거래비용 : " + 거래비용;
+                str += "시가총액 : " + 시가총액;
+
+                SendLogMessage(str);
+                
+            }
         }
 
         public void Start()

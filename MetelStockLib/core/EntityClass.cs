@@ -65,8 +65,9 @@ namespace MetelStockLib.core
         }
     }
 
+    /*
     [Serializable]
-    public class StockItem //종목정보
+    public class StockItem
     {
         public string ItemCode { get; set; }
         public string ItemName { get; set; }
@@ -78,4 +79,64 @@ namespace MetelStockLib.core
         public long HighPrice { get; set; }
         public long LowPrice { get; set; }
     }
+    */
+
+    
+    [Serializable]
+    public class StockItem //종목정보
+    {
+        private string itemCode = "";
+        private string itemName = "";
+        private long price = 0;
+        private long netChange = 0;
+        private double upDownRate = 0;
+        private long volume = 0;
+        private long openPrice = 0;
+        private long highPrice = 0;
+        private long lowPrice = 0;
+        private long ma5 = 0;
+        private long ma10 = 0;
+        private long ma20 = 0;
+        private long ma60 = 0;
+        private long ma120 = 0;
+        private long ma240 = 0;
+
+        public string ItemCode { get => itemCode; set => itemCode = value; }
+        public string ItemName { get => itemName; set => itemName = value; }
+        public long Price { get => price; set => price = value; }
+        public long NetChange { get => netChange; set => netChange = value; }
+        public double UpDownRate { get => upDownRate; set => upDownRate = value; }
+        public long Volume { get => volume; set => volume = value; }
+        public long OpenPrice { get => openPrice; set => openPrice = value; }
+        public long HighPrice { get => highPrice; set => highPrice = value; }
+        public long LowPrice { get => lowPrice; set => lowPrice = value; }
+        public long Ma5 { get => ma5; set => ma5 = value; }
+        public long Ma10 { get => ma10; set => ma10 = value; }
+        public long Ma20 { get => ma20; set => ma20 = value; }
+        public long Ma60 { get => ma60; set => ma60 = value; }
+        public long Ma120 { get => ma120; set => ma120 = value; }
+        public long Ma240 { get => ma240; set => ma240 = value; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"itemCode:{itemCode} ");
+            sb.Append($"itemName:{itemName} ");
+            sb.Append($"price:{price} ");
+            sb.Append($"netChange:{netChange} ");
+            sb.Append($"upDownRate:{upDownRate} ");
+            sb.Append($"volume:{volume} ");
+            sb.Append($"openPrice:{openPrice} ");
+            sb.Append($"highPrice:{highPrice} ");
+            sb.Append($"lowPrice:{lowPrice} ");
+            sb.Append($"ma5:{ma5} ");
+            sb.Append($"ma10:{ma10} ");
+            sb.Append($"ma20:{ma20} ");
+            sb.Append($"ma60:{ma60} ");
+            sb.Append($"ma120:{ma120} ");
+            sb.Append($"ma240:{ma240} ");
+            return sb.ToString();
+        }
+    }
+    
 }

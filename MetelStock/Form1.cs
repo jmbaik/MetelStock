@@ -8,19 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MetelStockLib.core;
+using MetelStockLib.db;
 
 namespace MetelStock
 {
     public partial class Form1 : Form
     {
         OpenSystemTrading ost;
+        DBManager dbm;
 
+        private string selectedDgs = "111"; //선택되어진 datagridvew 조합 급거 1 매도전락 1 백테스트 1
         private string itemCode = "";
+        private string realItemCode = "";
         public Form1()
         {
             InitializeComponent();
             ost = OpenSystemTrading.GetInstance();
             ost.SetAxKHOpenAPI(axKHOpenAPI1);
+            dbm = new DBManager();
+            
 
             // *** 초기 세팅 *********************************************
             lbItemInfo.Text = "종목명 : 종목코드 (일자) ";
@@ -33,6 +39,11 @@ namespace MetelStock
             로그인ToolStripMenuItem.Click += Login;
             ost.OnLoged += UI_OnLoged;
             ost.OnReceivedStockItems += UI_OnOnReceivedStockItems;
+            ost.OnReceivedLogMessage += UI_OnReceivedRealState;
+            ost.OnReceivedItemInfo += UI_OnReceivedItemInfo;
+            dbm.OnReceivedDBLogMessage += UI_OnReceivedDbLog;
+            
+            
 
             dg급거종목.CellClick += UI_OnCellClick;
             dg급거종목.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -40,7 +51,92 @@ namespace MetelStock
             cbAvgTerm.SelectedIndexChanged += UI_Cb_Changed;
             cbDayMinute.SelectedIndexChanged += UI_Cb_Changed;
             cbTickType.SelectedIndexChanged += UI_Cb_Changed;
+            btnSave.Click += Btn_Click;
+            btnStart.Click += Btn_Click;
+            btnSearch.Click += Btn_Click;
+            btn검색사용자관심.Click += Btn_Click;
 
+        }
+
+        private void UI_OnReceivedItemInfo(object sender, OnReceivedItemInfoEventArgs e)
+        {
+            realItemCode = e.ItemCode;
+            writeRealState("request item info : " + realItemCode);
+        }
+
+        private void UI_OnReceivedRealState(object sender, OnReceivedLogMessageEventArgs e)
+        {
+            writeRealState(e.Message);
+        }
+
+        private void writeRealState(string str)
+        {
+            lboxRealState.Items.Add(str);
+            lboxRealState.SelectedIndex = lboxRealState.Items.Count - 1;
+        }
+
+        private void UI_OnReceivedDbLog(object sender, OnReceivedLogMessageEventArgs e)
+        {
+            writeBackTest(e.Message);
+        }
+
+        private void writeBackTest(string str)
+        {
+            lboxBackTest.Items.Add(str);
+            lboxBackTest.SelectedIndex = lboxBackTest.Items.Count - 1;
+        }
+
+        private void sendLogToBackTest(string msg)
+        {
+            writeBackTest(msg);
+        }
+
+        private void Btn_Click(object sender, EventArgs e)
+        {
+            if (sender.Equals(btnSave))
+            {
+                if (selectedDgs.Substring(0,1).Equals("1"))
+                {
+                    //종목코드, 종목명, 현재가, 대비, 등락률, 거래량
+                    DataGridViewRow dr = dg급거종목.SelectedRows[0];
+                    StockItem stock = new StockItem();
+                    stock.ItemCode = dr.Cells[0].Value.ToString().Trim();
+                    stock.ItemName = dr.Cells[1].Value.ToString().Trim();
+                    stock.Price = Math.Abs(long.Parse(formatOnlyNumber(dr.Cells[2].Value)));
+                    stock.NetChange = long.Parse(formatOnlyNumber(dr.Cells[3].Value));
+                    stock.UpDownRate = double.Parse(formatOnlyNumber(dr.Cells[4].Value));
+                    stock.Volume = long.Parse(formatOnlyNumber(dr.Cells[5].Value));
+                    dbm.insert_대상항목(stock);
+                }
+            } else if (sender.Equals(btnStart))
+            {
+
+
+            } else if (sender.Equals(btnSearch))
+            {
+                ost.RequestHighTodayVolume("전체");
+            } else if (sender.Equals(btn검색사용자관심))
+            {
+                string searchItemCode = txtSearchItemCode.Text;
+                if (searchItemCode.Length == 0)
+                {
+                    MessageBox.Show("종목코드가 없습니다.");
+                    return;
+                }
+                ost.RequestItemInfo(searchItemCode);
+            }
+
+        }
+
+        private string formatOnlyNumber(object str)
+        {
+            if (str == null) return "";
+            string result = "";
+            if(str.ToString().Length > 0)
+            {
+                result = str.ToString().Replace(",", "");
+            }
+            return result;
         }
 
         private void UI_Cb_Changed(object sender, EventArgs e)
@@ -88,8 +184,10 @@ namespace MetelStock
 
         private void UI_OnLoged(object sender, EventArgs e)
         {
-            if(ost.IsLogin())
-                ost.RequestHighTodayVolume("전체");
+            if (ost.IsLogin())
+            {
+
+            }               
             else
             {
                 MessageBox.Show("로그온 실패");
