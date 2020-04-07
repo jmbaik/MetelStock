@@ -52,9 +52,10 @@ namespace MetelStock
             cbDayMinute.SelectedIndexChanged += UI_Cb_Changed;
             cbTickType.SelectedIndexChanged += UI_Cb_Changed;
             btnSave.Click += Btn_Click;
-            btnStart.Click += Btn_Click;
+            btnReal.Click += Btn_Click;
             btnSearch.Click += Btn_Click;
             btn검색사용자관심.Click += Btn_Click;
+            btnReal.Click += Btn_Click;
 
         }
 
@@ -108,8 +109,11 @@ namespace MetelStock
                     stock.Volume = long.Parse(formatOnlyNumber(dr.Cells[5].Value));
                     dbm.insert_대상항목(stock);
                 }
-            } else if (sender.Equals(btnStart))
+            } else if (sender.Equals(btnReal))
             {
+                // 실시간 테스트 
+                ost.RequestRealReg();
+                writeRealState("실시간 테스트 시작 ");
 
 
             } else if (sender.Equals(btnSearch))

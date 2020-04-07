@@ -49,12 +49,13 @@
             this.tpStrategySell = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnSearch = new System.Windows.Forms.Button();
             this.cbDayMinute = new System.Windows.Forms.ComboBox();
             this.cbTickType = new System.Windows.Forms.ComboBox();
             this.txtYmd = new System.Windows.Forms.TextBox();
             this.numMaAvg = new System.Windows.Forms.NumericUpDown();
             this.lbItemInfo = new System.Windows.Forms.Label();
-            this.btnStart = new System.Windows.Forms.Button();
+            this.btnReal = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.cbAvgTerm = new System.Windows.Forms.ComboBox();
@@ -97,7 +98,6 @@
             this.txtSearchItemCode = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.axKHOpenAPI1 = new AxKHOpenAPILib.AxKHOpenAPI();
-            this.btnSearch = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -124,7 +124,6 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.메뉴ToolStripMenuItem,
@@ -238,7 +237,7 @@
             this.tpStrategyBuy.Location = new System.Drawing.Point(8, 39);
             this.tpStrategyBuy.Name = "tpStrategyBuy";
             this.tpStrategyBuy.Padding = new System.Windows.Forms.Padding(3);
-            this.tpStrategyBuy.Size = new System.Drawing.Size(831, 619);
+            this.tpStrategyBuy.Size = new System.Drawing.Size(831, 627);
             this.tpStrategyBuy.TabIndex = 1;
             this.tpStrategyBuy.Text = "매수전략";
             this.tpStrategyBuy.UseVisualStyleBackColor = true;
@@ -247,7 +246,7 @@
             // 
             this.tpStrategySell.Location = new System.Drawing.Point(8, 39);
             this.tpStrategySell.Name = "tpStrategySell";
-            this.tpStrategySell.Size = new System.Drawing.Size(831, 619);
+            this.tpStrategySell.Size = new System.Drawing.Size(831, 627);
             this.tpStrategySell.TabIndex = 2;
             this.tpStrategySell.Text = "매도전략";
             this.tpStrategySell.UseVisualStyleBackColor = true;
@@ -282,7 +281,7 @@
             this.panel1.Controls.Add(this.txtYmd);
             this.panel1.Controls.Add(this.numMaAvg);
             this.panel1.Controls.Add(this.lbItemInfo);
-            this.panel1.Controls.Add(this.btnStart);
+            this.panel1.Controls.Add(this.btnReal);
             this.panel1.Controls.Add(this.btnSave);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.cbAvgTerm);
@@ -291,6 +290,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1469, 64);
             this.panel1.TabIndex = 0;
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.AutoSize = true;
+            this.btnSearch.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnSearch.Location = new System.Drawing.Point(1152, 4);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(86, 47);
+            this.btnSearch.TabIndex = 12;
+            this.btnSearch.Text = "조회";
+            this.btnSearch.UseVisualStyleBackColor = true;
             // 
             // cbDayMinute
             // 
@@ -351,22 +361,22 @@
             this.lbItemInfo.TabIndex = 6;
             this.lbItemInfo.Text = "삼성전자 : 005930";
             // 
-            // btnStart
+            // btnReal
             // 
-            this.btnStart.AutoSize = true;
-            this.btnStart.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnStart.Location = new System.Drawing.Point(1374, 5);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(81, 47);
-            this.btnStart.TabIndex = 5;
-            this.btnStart.Text = "시작";
-            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnReal.AutoSize = true;
+            this.btnReal.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnReal.Location = new System.Drawing.Point(1351, 5);
+            this.btnReal.Name = "btnReal";
+            this.btnReal.Size = new System.Drawing.Size(108, 47);
+            this.btnReal.TabIndex = 5;
+            this.btnReal.Text = "실시간";
+            this.btnReal.UseVisualStyleBackColor = true;
             // 
             // btnSave
             // 
             this.btnSave.AutoSize = true;
             this.btnSave.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnSave.Location = new System.Drawing.Point(1277, 5);
+            this.btnSave.Location = new System.Drawing.Point(1254, 5);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(86, 47);
             this.btnSave.TabIndex = 4;
@@ -378,7 +388,7 @@
             this.button1.AutoSize = true;
             this.button1.Location = new System.Drawing.Point(1015, 8);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(140, 34);
+            this.button1.Size = new System.Drawing.Size(92, 34);
             this.button1.TabIndex = 3;
             this.button1.Text = "이평선";
             this.button1.UseVisualStyleBackColor = true;
@@ -797,7 +807,7 @@
             this.tabPage2.Location = new System.Drawing.Point(8, 39);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(2396, 1517);
+            this.tabPage2.Size = new System.Drawing.Size(2396, 1525);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -811,17 +821,6 @@
             this.axKHOpenAPI1.Size = new System.Drawing.Size(93, 40);
             this.axKHOpenAPI1.TabIndex = 0;
             this.axKHOpenAPI1.Visible = false;
-            // 
-            // btnSearch
-            // 
-            this.btnSearch.AutoSize = true;
-            this.btnSearch.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnSearch.Location = new System.Drawing.Point(1175, 4);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(86, 47);
-            this.btnSearch.TabIndex = 12;
-            this.btnSearch.Text = "조회";
-            this.btnSearch.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -882,7 +881,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lbItemInfo;
-        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnReal;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox cbAvgTerm;
