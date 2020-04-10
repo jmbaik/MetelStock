@@ -37,6 +37,7 @@ namespace MetelStockLib.core
         // 추가 이벤트 
         public event EventHandler<OnReceivedStockItemsEventArgs> OnReceivedStockItems; //관심종목 제거 시
         public event EventHandler<EventArgs> OnLoged; // 로그온이후 
+        public event EventHandler<OnReceivedAutoTrading3MDataEventArgs> OnReceivedAutoTrading3MData; //차트데이터 수신 시
 
         private static int screenNum = 5000;
 
@@ -249,6 +250,35 @@ namespace MetelStockLib.core
                     dbm.mergeDMPrc("M", itemCode, itemName, chartDataList);
                     SendLogMessage(itemName + " 주식분봉차트조회요청 결과 수신");
                 }
+            } else if (e.sRQName.Equals(RqName.자동매매분봉차트요청))
+            {
+                string itemCode = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, 0, "종목코드").Trim();
+                string itemName = axKHOpenAPI.GetMasterCodeName(itemCode);
+
+                int cnt = axKHOpenAPI.GetRepeatCnt(e.sTrCode, e.sRQName);
+
+                List<ChartData> chartDataList = new List<ChartData>();
+                for (int i = 0; i < cnt; i++)
+                {
+                    string time = "";
+                    time = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "체결시간").Trim();
+                    long closePrice = Math.Abs(long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "현재가")));
+                    long openPrice = Math.Abs(long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "시가")));
+                    long highPrice = Math.Abs(long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "고가")));
+                    long lowPrice = Math.Abs(long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "저가")));
+                    long volume = Math.Abs(long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "거래량")));
+
+                    chartDataList.Add(new ChartData(highPrice, lowPrice, openPrice, closePrice, volume, time));
+                }
+
+                bool hasNext = false;
+                if (e.sPrevNext.Equals("2")) //추가데이터가 존재할 경우
+                    hasNext = true;
+
+                OnReceivedAutoTrading3MData?.Invoke(this, new OnReceivedAutoTrading3MDataEventArgs(itemCode, itemName, chartDataList, hasNext));
+                // dbms 분종 데이터 넣기
+                dbm.mergeMfAt3M(itemCode, chartDataList);
+                Console.WriteLine("[응답]자동분봉차트요청 mergeMfAt3M작업완료 [" + DateTime.Now.ToString() +"]");
             }
             else if (e.sRQName.Equals(RqName.계좌평가현황요청))
             {
@@ -463,7 +493,7 @@ namespace MetelStockLib.core
 
             requestTrDataManager.RequestTrData(requestChartDataTask);
         }
-        public void RequestMinuteChartData(string itemCode, string tickType)
+        public void RequestMinuteChartData(string itemCode, string tickType, string rqName=RqName.주식분봉차트조회요청)
         {
             Task requestChartDataTask = new Task(() =>
             {
@@ -472,16 +502,16 @@ namespace MetelStockLib.core
                 axKHOpenAPI.SetInputValue("수정주가구분", "0");
                 const string STrCode = "opt10080";
                 string sScreenNo = GetScreenNum();
-                int result = axKHOpenAPI.CommRqData(RqName.주식분봉차트조회요청, STrCode, 0, sScreenNo);
+                int result = axKHOpenAPI.CommRqData(rqName, STrCode, 0, sScreenNo);
 
                 if (result == ErrorCode.정상처리)
                 {
-                    Console.WriteLine("주식분봉차트조회요청 성공");
-                    dbm.insertActH(RqName.주식분봉차트조회요청, STrCode, sScreenNo, "RequestMinuteChartData", itemCode);
+                    Console.WriteLine(rqName + " 성공");
+                    // dbm.insertActH(rqName, STrCode, sScreenNo, "RequestMinuteChartData", itemCode);
                 }
                 else
                 {
-                    Console.WriteLine("주식분봉차트조회요청 실패");
+                    Console.WriteLine(rqName + " 실패");
                 }
             });
 

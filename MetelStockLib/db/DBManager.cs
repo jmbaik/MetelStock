@@ -196,11 +196,24 @@ namespace MetelStockLib.db
         private double maverage(double[] c_arr, int curIndex, int cha)
         {
             double ret = 0, sum=0;
+            // 정배열 0인덱스가 가장 이른 시간인 경우 
+            /*
             if(curIndex > cha-1)
             {
                 for (int i = 0; i < cha; i++)
                 {
                     sum += c_arr[curIndex - i];
+                }
+                ret = sum / cha;
+            }
+            */
+            // 역배열 0인덱스가 가장 최신 시간인 경우 
+            int totalCount = c_arr.Length;
+            if(curIndex <= totalCount - cha)
+            {
+                for (int i = 0; i < cha; i++)
+                {
+                    sum += c_arr[curIndex + i];
                 }
                 ret = sum / cha;
             }
@@ -220,11 +233,9 @@ namespace MetelStockLib.db
                 connection.Open();
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = connection;            
-                for (int i = cnt-1 ; i >=0; i--)
+                for (int i = 0 ; i < cnt; i++)
                 {
                     ChartData chart = chartDataList[i];
-                    double dma20=0, dma5=0, dma10=0, dma60=0,dma120=0,dma240=0;
- 
                     Dictionary<string, long> ma = new Dictionary<string, long>();
                     ma["ma20"] = Convert.ToInt64(maverage(c_arr, i, 20));
                     ma["ma5"] = Convert.ToInt64(maverage(c_arr, i, 5));
@@ -259,6 +270,135 @@ namespace MetelStockLib.db
                 cmd.CommandText = q;
                 cmd.CommandType = CommandType.Text;
                 cmd.ExecuteNonQuery();
+            };
+        }
+
+        /*************************************************************************************************/
+        /*** 자동매매 Auto Trading Part *******************************************************************/  
+
+        public List<StockItem> getMfAtItem()
+        {
+            List<StockItem> stockList = new List<StockItem>();
+            using (OracleConnection connection = new OracleConnection(conn_str))
+            {
+                connection.Open();
+                using (OracleCommand cmd = new OracleCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "SELECT ITEM_CD, ITEM_NM FROM MF_AT_ITEM WHERE REAL_YN='Y'";
+                    using (OracleDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            StockItem stock = new StockItem();
+                            stock.ItemCode = reader["ITEM_CD"].ToString();
+                            stock.ItemName = reader["ITEM_NM"].ToString();
+                            stockList.Add(stock);
+                        }
+                    }
+                }
+            }
+            return stockList;
+        }
+        
+        private string queryMergeAT3M(string itemCode, ChartData chart, Dictionary<string, long> dic)
+        {
+            long bvol = dic["bvol"];
+            string query = $@"
+                        MERGE INTO MF_AT_3M d
+                        USING (
+                          Select
+                            '{chart.Time}' as YMDHM,
+                            '{itemCode}' as ITEM_CD,
+                            {chart.ClosePrice} as PRC,
+                            {chart.OpenPrice} as S_PRC,
+                            {chart.HighPrice} as H_PRC,
+                            {chart.LowPrice} as L_PRC,
+                            {chart.Volume} as VOL,
+                            {bvol} as BVOL,
+                            {dic["ma5"]} as MA5,
+                            {dic["bma5"]} as BMA5,
+                            {dic["ma10"]} as MA10,
+                            {dic["bma10"]} as BMA10,
+                            {dic["ma20"]} as MA20,
+                            {dic["bma20"]} as BMA20,
+                            {dic["ma60"]} as MA60,
+                            {dic["ma120"]} as MA120
+                          From Dual) s
+                        ON
+                          (d.YMDHM = s.YMDHM and 
+                          d.ITEM_CD = s.ITEM_CD )
+                        WHEN MATCHED
+                        THEN
+                        UPDATE SET
+                          d.PRC = s.PRC,
+                          d.S_PRC = s.S_PRC,
+                          d.H_PRC = s.H_PRC,
+                          d.L_PRC = s.L_PRC,
+                          d.VOL = s.VOL,
+                          d.BVOL = s.BVOL,
+                          d.VOL_BRT = DECODE(s.BVOL,0,0,s.VOL/s.BVOL),
+                          d.MA5 = s.MA5,
+                          d.BMA5 = s.BMA5,
+                          d.MA10 = s.MA10,
+                          d.BMA10 = s.BMA10,
+                          d.MA20 = s.MA20,
+                          d.BMA20 = s.BMA20,
+                          d.MA60 = s.MA60,
+                          d.MA120 = s.MA120,
+                          d.UPD_ID = 'auto',
+                          d.UPD_DT = sysdate
+                        WHEN NOT MATCHED
+                        THEN
+                        INSERT (
+                          YMDHM, ITEM_CD, PRC,
+                          S_PRC, H_PRC, L_PRC,
+                          VOL, BVOL, VOL_BRT,
+                          MA5, BMA5, MA10, BMA10, MA20, BMA20,
+                          MA60, MA120, REG_ID, REG_DT)
+                        VALUES (
+                          s.YMDHM, s.ITEM_CD, s.PRC,
+                          s.S_PRC, s.H_PRC, s.L_PRC,
+                          s.VOL, s.BVOL, decode(s.BVOL,0,0,s.VOL/s.BVOL),
+                          s.MA5, s.BMA5, s.MA10, s.BMA10, s.MA20, s.BMA20,
+                          s.MA60, s.MA120, 'auto', sysdate)
+                    ";
+            return query;
+        }
+        public void mergeMfAt3M(string itemCode, List<ChartData> chartDataList)
+        {
+            int cnt = chartDataList.Count;
+            double[] c_arr = new double[cnt];
+            // 최신데이터부터 0인덱스 순으로 받는다. 
+            for (int i = 0; i < cnt; i++)
+            {
+                c_arr[i] = chartDataList[i].ClosePrice;
+            }
+
+            using (OracleConnection connection = new OracleConnection(conn_str))
+            {
+                connection.Open();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connection;
+                for (int i = 0; i< cnt; i++)
+                {
+                    ChartData chart = chartDataList[i];
+                    Dictionary<string, long> ma = new Dictionary<string, long>();
+                    ma["bvol"] = i == (cnt - 1) ? 0 : chartDataList[i + 1].Volume;
+                    ma["bma5"] = i == (cnt - 1) ? 0 : Convert.ToInt64(maverage(c_arr, i+1, 5));
+                    ma["bma10"] = i == (cnt - 1) ? 0 : Convert.ToInt64(maverage(c_arr, i + 1, 10));
+                    ma["bma20"] = i == (cnt - 1) ? 0 : Convert.ToInt64(maverage(c_arr, i + 1, 20));
+                    ma["ma5"] = Convert.ToInt64(maverage(c_arr, i, 5));
+                    ma["ma10"] = Convert.ToInt64(maverage(c_arr, i, 10));
+                    ma["ma20"] = Convert.ToInt64(maverage(c_arr, i, 20));
+                    ma["ma60"] = Convert.ToInt64(maverage(c_arr, i, 60));
+                    ma["ma120"] = Convert.ToInt64(maverage(c_arr, i, 120));
+                    ma["ma240"] = Convert.ToInt64(maverage(c_arr, i, 240));
+                    string q = queryMergeAT3M(itemCode, chart, ma);
+                    cmd.CommandText = q;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.ExecuteNonQuery();
+                }
             };
         }
     }

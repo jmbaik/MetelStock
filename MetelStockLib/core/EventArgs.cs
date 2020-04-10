@@ -45,7 +45,23 @@ namespace MetelStockLib.core
             this.Message = "차트데이터를 수신하였습니다.";
         }
     }
+    public class OnReceivedAutoTrading3MDataEventArgs : EventArgs
+    {
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
+        public List<ChartData> ChartDataList { get; set; }
+        public bool HasNext { get; set; }
+        public string Message { get; set; }
 
+        public OnReceivedAutoTrading3MDataEventArgs(string itemCode, string itemName, List<ChartData> chartDataList, bool hasNext)
+        {
+            this.ItemCode = itemCode;
+            this.ItemName = itemName;
+            this.ChartDataList = chartDataList;
+            this.HasNext = hasNext;
+            this.Message = "자동매매 차트데이터를 수신하였습니다.";
+        }
+    }
     public class OnReceivedAccountBalanceEventArgs : EventArgs
     {
         public long 예수금 { get; set; }

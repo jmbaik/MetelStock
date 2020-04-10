@@ -56,6 +56,7 @@ namespace MetelStock
             btnSearch.Click += Btn_Click;
             btn검색사용자관심.Click += Btn_Click;
             btnReal.Click += Btn_Click;
+            btnAtRealStart.Click += Btn_Click;
 
         }
 
@@ -96,7 +97,7 @@ namespace MetelStock
         {
             if (sender.Equals(btnSave))
             {
-                if (selectedDgs.Substring(0,1).Equals("1"))
+                if (selectedDgs.Substring(0, 1).Equals("1"))
                 {
                     //종목코드, 종목명, 현재가, 대비, 등락률, 거래량
                     DataGridViewRow dr = dg급거종목.SelectedRows[0];
@@ -109,12 +110,19 @@ namespace MetelStock
                     stock.Volume = long.Parse(formatOnlyNumber(dr.Cells[5].Value));
                     dbm.insert_대상항목(stock);
                 }
+            } else if (sender.Equals(btnAtRealStart)) {
+                //실시간 자동매매 시작
+                System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                timer.Interval = 1*60*1000;
+                timer.Tick += new EventHandler(Timer_AutoTrading);
+                timer.Start();
+                Console.WriteLine("btnAtrealstart timer start");
+
             } else if (sender.Equals(btnReal))
             {
                 // 실시간 테스트 
                 ost.RequestRealReg();
                 writeRealState("실시간 테스트 시작 ");
-
 
             } else if (sender.Equals(btnSearch))
             {
@@ -131,6 +139,7 @@ namespace MetelStock
             }
 
         }
+
 
         private string formatOnlyNumber(object str)
         {
@@ -219,9 +228,21 @@ namespace MetelStock
         }
 
         private void Login(object sender, EventArgs e)
-        {
- 
+        { 
             ost.Start();
         }
+
+        //*********** 자동 매매 파트 **********************************************************/
+        private void Timer_AutoTrading(object sender, EventArgs e)
+        {
+            List<StockItem> stockList = dbm.getMfAtItem();
+            foreach (StockItem item in stockList)
+            {
+                ost.RequestMinuteChartData(item.ItemCode, "3:3분", RqName.자동매매분봉차트요청);
+                Console.WriteLine("자동매매 timer 시작 RequestMinuteChartData ::: " + item.ItemCode + "[" + DateTime.Now.ToString() +"]");
+            }
+        }
+
+
     }
 }

@@ -15,6 +15,7 @@ namespace MetelStockLib.core
         public const string 계좌평가현황요청 = "계좌평가현황요청"; //OPW00004
         public const string 당일거래량상위요청 = "당일거래량상위요청"; // opt10030
         public const string 전일거래량상위요청 = "전일거래량상위요청"; // opt10031
+        public const string 자동매매분봉차트요청 = "자동매매분봉차트요청"; //opt10080
 
     }
 
