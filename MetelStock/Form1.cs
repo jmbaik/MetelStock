@@ -52,7 +52,6 @@ namespace MetelStock
             cbDayMinute.SelectedIndexChanged += UI_Cb_Changed;
             cbTickType.SelectedIndexChanged += UI_Cb_Changed;
             btnSave.Click += Btn_Click;
-            btnReal.Click += Btn_Click;
             btnSearch.Click += Btn_Click;
             btn검색사용자관심.Click += Btn_Click;
             btnReal.Click += Btn_Click;
@@ -111,9 +110,12 @@ namespace MetelStock
                     dbm.insert_대상항목(stock);
                 }
             } else if (sender.Equals(btnAtRealStart)) {
+                // 대상 종목 백업 실행
+                //dbm.moveHistoryMfAtItem();
+
                 //실시간 자동매매 시작
                 System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-                timer.Interval = 1*60*1000;
+                timer.Interval = 5*60*1000;
                 timer.Tick += new EventHandler(Timer_AutoTrading);
                 timer.Start();
                 Console.WriteLine("btnAtrealstart timer start");
@@ -126,7 +128,7 @@ namespace MetelStock
 
             } else if (sender.Equals(btnSearch))
             {
-                ost.RequestHighTodayVolume("전체");
+                ost.RequestHighTodayVolume(false, "전체");
             } else if (sender.Equals(btn검색사용자관심))
             {
                 string searchItemCode = txtSearchItemCode.Text;
@@ -235,12 +237,24 @@ namespace MetelStock
         //*********** 자동 매매 파트 **********************************************************/
         private void Timer_AutoTrading(object sender, EventArgs e)
         {
-            List<StockItem> stockList = dbm.getMfAtItem();
-            foreach (StockItem item in stockList)
+            ost.RequestHighVolume0186(true, "코스닥");
+
+            /*
+            DateTime startDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
+            if (DateTime.Now >= startDt)
+            {
+                ost.RequestHighVolume0186(true, "코스닥");
+            }
+            */
+            /*
+            List<StockItem> autoStockList = dbm.getMfAtItem();
+            foreach (StockItem item in autoStockList)
             {
                 ost.RequestMinuteChartData(item.ItemCode, "3:3분", RqName.자동매매분봉차트요청);
-                Console.WriteLine("자동매매 timer 시작 RequestMinuteChartData ::: " + item.ItemCode + "[" + DateTime.Now.ToString() +"]");
+                Console.WriteLine("자동매매 timer 시작 RequestMinuteChartData ::: " + item.ItemCode + "[" + DateTime.Now.ToString() + "]");
             }
+            */
+        
         }
 
 

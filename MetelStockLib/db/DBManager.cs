@@ -276,7 +276,7 @@ namespace MetelStockLib.db
         /*************************************************************************************************/
         /*** 자동매매 Auto Trading Part *******************************************************************/  
 
-        public List<StockItem> getMfAtItem()
+        public List<StockItem> getMfAtItem(string ymd)
         {
             List<StockItem> stockList = new List<StockItem>();
             using (OracleConnection connection = new OracleConnection(conn_str))
@@ -284,8 +284,16 @@ namespace MetelStockLib.db
                 connection.Open();
                 using (OracleCommand cmd = new OracleCommand())
                 {
+                    string q = $@"
+                            SELECT MM.ITEM_CD, MM.ITEM_NM FROM (
+                                SELECT ITEM_CD, ITEM_NM FROM MF_AT_ITEM WHERE REAL_YN='Y' AND YMD='{ymd}'
+                                UNION ALL
+                                SELECT A.ITEM_CD, B.ITEM_NM FROM MF_AT_MST A, MF_AT_ITEM B WHERE A.ITEM_CD=B.ITEM_CD 
+                                AND A.YMD=B.YMD AND NVL(A.DONE,'N')='N' AND B.YMD='{ymd}'
+                            ) MM GROUP BY MM.ITEM_CD, MM.ITEM_NM
+                                ";
                     cmd.Connection = connection;
-                    cmd.CommandText = "SELECT ITEM_CD, ITEM_NM FROM MF_AT_ITEM WHERE REAL_YN='Y'";
+                    cmd.CommandText = q;
                     using (OracleDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -299,6 +307,73 @@ namespace MetelStockLib.db
                 }
             }
             return stockList;
+        }
+
+        public void mergeListMfAtItem(string ymd, List<StockItem> stockList)
+        {
+            int cnt = stockList.Count;
+            using (OracleConnection connection = new OracleConnection(conn_str))
+            {
+                connection.Open();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connection;
+                for (int i = 0; i < cnt; i++)
+                {
+                    StockItem stock = stockList[i];
+                    string realYn = stock.NetChange < 0 ? "N" : "Y";
+                    string q = $@"
+                        MERGE INTO METSTOCK.MF_AT_ITEM d
+                        USING (
+                          Select
+                            '{ymd}' as YMD,
+                            '{stock.ItemCode}' as ITEM_CD,
+                            '{stock.ItemName}' as ITEM_NM,
+                            {stock.NetChange} as NET,
+                            {stock.UpDownRate} as UD_RT,
+                            {stock.Volume} as VOL,
+                            {stock.TrAmount} as TR_AMT,
+                            {stock.Bvolume} as BVOL,
+                            {stock.Rnk} as RNK,
+                            {stock.Brnk} as BRNK,
+                            '{realYn}' as REAL_YN
+                          From DUAL) s
+                        ON
+                          (d.YMD = s.YMD and 
+                          d.ITEM_CD = s.ITEM_CD )
+                        WHEN MATCHED
+                        THEN
+                        UPDATE SET
+                          d.ITEM_NM = s.ITEM_NM,
+                          d.NET = s.NET,
+                          d.UD_RT = s.UD_RT,
+                          d.VOL = s.VOL,
+                          d.TR_AMT = s.TR_AMT,
+                          d.BVOL = s.BVOL,
+                          d.RNK = s.RNK,
+                          d.BRNK = s.BRNK,
+                          d.REAL_YN = s.REAL_YN,
+                          d.UPD_ID = 'auto',
+                          d.UPD_DT = sysdate
+                        WHEN NOT MATCHED
+                        THEN
+                        INSERT (
+                          YMD, ITEM_CD, ITEM_NM,
+                          NET, UD_RT, VOL,
+                          TR_AMT, BVOL, RNK,
+                          BRNK, REAL_YN,
+                          REG_ID, REG_DT)
+                        VALUES (
+                          s.YMD, s.ITEM_CD, s.ITEM_NM,
+                          s.NET, s.UD_RT, s.VOL,
+                          s.TR_AMT, s.BVOL, s.RNK,
+                          s.BRNK, s.REAL_YN,
+                          'auto', sysdate)
+                    ";
+                    cmd.CommandText = q;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.ExecuteNonQuery();
+                }
+            };
         }
         
         private string queryMergeAT3M(string itemCode, ChartData chart, Dictionary<string, long> dic)
@@ -337,7 +412,7 @@ namespace MetelStockLib.db
                           d.L_PRC = s.L_PRC,
                           d.VOL = s.VOL,
                           d.BVOL = s.BVOL,
-                          d.VOL_BRT = DECODE(s.BVOL,0,0,s.VOL/s.BVOL),
+                          d.VOL_BRT = ROUND(DECODE(s.BVOL,0,0,s.VOL/s.BVOL),2),
                           d.MA5 = s.MA5,
                           d.BMA5 = s.BMA5,
                           d.MA10 = s.MA10,
@@ -359,7 +434,7 @@ namespace MetelStockLib.db
                         VALUES (
                           s.YMDHM, s.ITEM_CD, s.PRC,
                           s.S_PRC, s.H_PRC, s.L_PRC,
-                          s.VOL, s.BVOL, decode(s.BVOL,0,0,s.VOL/s.BVOL),
+                          s.VOL, s.BVOL, ROUND(decode(s.BVOL,0,0,s.VOL/s.BVOL),2),
                           s.MA5, s.BMA5, s.MA10, s.BMA10, s.MA20, s.BMA20,
                           s.MA60, s.MA120, 'auto', sysdate)
                     ";
@@ -380,7 +455,7 @@ namespace MetelStockLib.db
                 connection.Open();
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = connection;
-                for (int i = 0; i< cnt; i++)
+                for (int i = cnt-1; i>= 0; i--)
                 {
                     ChartData chart = chartDataList[i];
                     Dictionary<string, long> ma = new Dictionary<string, long>();
@@ -399,6 +474,25 @@ namespace MetelStockLib.db
                     cmd.CommandType = CommandType.Text;
                     cmd.ExecuteNonQuery();
                 }
+            };
+        }
+
+        public void moveHistoryMfAtItem()
+        {
+            using (OracleConnection connection = new OracleConnection(conn_str))
+            {
+                connection.Open();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connection;
+                string q = $@"INSERT INTO MF_AT_ITEM_H SELECT * FROM MF_AT_ITEM ORDER BY YMD, ITEM_CD";
+                cmd.CommandText = q;
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
+
+                string deleteQuery = $@"DELETE FROM MF_AT_ITEM";
+                cmd.CommandText = deleteQuery;
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
             };
         }
     }

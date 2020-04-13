@@ -41,6 +41,31 @@ namespace MetelStockLib.core
 
         private static int screenNum = 5000;
 
+        public static string getYmd()
+        {
+            string result = "";
+            DateTime startDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
+            DateTime endDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 15, 30, 0);
+            if (DateTime.Now.DayOfWeek.Equals(DayOfWeek.Sunday))
+            {
+                result = DateTime.Now.AddDays(-2).ToString("yyyyMMdd");
+            } else if (DateTime.Now.DayOfWeek.Equals(DayOfWeek.Saturday))
+            {
+                result = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+            }
+            else
+            {
+                if(startDt <= DateTime.Now && DateTime.Now <= endDt)
+                {
+                    result = DateTime.Now.ToString("yyyyMMdd");
+                } else
+                {
+                    result = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+                }
+            }
+            return result;
+        }
+
         private OpenSystemTrading()
         {
             requestTrDataManager = RequestTrDataManager.GetInstance();
@@ -65,66 +90,6 @@ namespace MetelStockLib.core
             axKHOpenAPI.OnReceiveTrData += AxKHOpenAPI_OnReceiveTrData;
             //추가 
             axKHOpenAPI.OnReceiveRealData += AxKHOpenAPI_OnReceiveRealData;
-        }
-
-        private void AxKHOpenAPI_OnReceiveRealData(object sender, _DKHOpenAPIEvents_OnReceiveRealDataEvent e)
-        {
-            if (e.sRealType.Equals("주식체결"))
-            {
-                // "20;10;11;12;13;14;15;16;17;18;25;26;27;28;29;30;31;32;228;311;290";
-                string item_cd = e.sRealKey;
-                string 체결시간 = axKHOpenAPI.GetCommRealData(item_cd, 20); //체결시간
-                string 현재가 = axKHOpenAPI.GetCommRealData(item_cd, 10); //현재가
-                string 전일대비 = axKHOpenAPI.GetCommRealData(item_cd, 11); //전일대비
-                string 등락율 = axKHOpenAPI.GetCommRealData(item_cd, 12); //등락율
-                string 누적거래량 = axKHOpenAPI.GetCommRealData(item_cd, 13);
-                string 누적거래대금 = axKHOpenAPI.GetCommRealData(item_cd, 14);
-                string 거래량 = axKHOpenAPI.GetCommRealData(item_cd, 15);
-                string 시가 = axKHOpenAPI.GetCommRealData(item_cd, 16);
-                string 고가 = axKHOpenAPI.GetCommRealData(item_cd, 17);
-                string 저가 = axKHOpenAPI.GetCommRealData(item_cd, 18);
-                string 전일대비기호 = axKHOpenAPI.GetCommRealData(item_cd, 25);
-                string 전일거래량대비 = axKHOpenAPI.GetCommRealData(item_cd, 26);
-                string 최우선매도호가 = axKHOpenAPI.GetCommRealData(item_cd, 27);
-                string 최우선매수호가 = axKHOpenAPI.GetCommRealData(item_cd, 28);
-
-                string 거래대금증감 = axKHOpenAPI.GetCommRealData(item_cd, 29);
-                string 전일거래량대비비율 = axKHOpenAPI.GetCommRealData(item_cd, 30);
-                string 거래회전율 = axKHOpenAPI.GetCommRealData(item_cd, 31);
-                string 거래비용 = axKHOpenAPI.GetCommRealData(item_cd, 32);
-                string 체결강도 = axKHOpenAPI.GetCommRealData(item_cd, 228);
-                string 시가총액 = axKHOpenAPI.GetCommRealData(item_cd, 311);
-                string 장구분 = axKHOpenAPI.GetCommRealData(item_cd, 290);
-
-
-                string str = item_cd;
-                str += "체결시간 : " + 체결시간;
-                str += "현재가 : " + 현재가;
-                str += "전일대비 : " + 전일대비;
-                str += "등락율 : " + 등락율;
-                str += "시가 : " + 시가;
-                str += "고가 : " + 고가;
-                str += "저가 : " + 저가;
-                str += "거래량 : " + 거래량;
-                str += "체결강도 : " + 체결강도;
-                str += "장구분 : " + 장구분;
-                str += "최우선매도호가 : " + 최우선매도호가;
-                str += "최우선매수호가 : " + 최우선매수호가;
-                str += "누적거래량 : " + 누적거래량;
-                str += "누적거래대금 : " + 누적거래대금;
-                str += "전일대비기호 : " + 전일대비기호;
-                str += "전일거래량대비 : " + 전일거래량대비;
-                str += "거래대금증감 : " + 거래대금증감;
-                str += "전일거래량대비비율 : " + 전일거래량대비비율;
-                str += "거래회전율 : " + 거래회전율;
-                str += "거래비용 : " + 거래비용;
-                str += "시가총액 : " + 시가총액;
-                string ymdhm = DateTime.Now.ToString("yyyyMMdd") + 체결시간;
-                ChartData chart = new ChartData(Math.Abs(double.Parse(고가)), Math.Abs(double.Parse(저가)), Math.Abs(double.Parse(시가))
-                    , Math.Abs(double.Parse(현재가)), Math.Abs(long.Parse(거래량)), ymdhm);
-                dbm.mergeMfBunPrc(item_cd, "noname", chart);
-                SendLogMessage(str);
-            }
         }
 
         public void Start()
@@ -278,7 +243,7 @@ namespace MetelStockLib.core
                 OnReceivedAutoTrading3MData?.Invoke(this, new OnReceivedAutoTrading3MDataEventArgs(itemCode, itemName, chartDataList, hasNext));
                 // dbms 분종 데이터 넣기
                 dbm.mergeMfAt3M(itemCode, chartDataList);
-                Console.WriteLine("[응답]자동분봉차트요청 mergeMfAt3M작업완료 [" + DateTime.Now.ToString() +"]");
+                Console.WriteLine($"[응답]자동분봉차트요청 mergeMfAt3M작업완료 {itemName}[{itemCode}] [" + DateTime.Now.ToString() +"]");
             }
             else if (e.sRQName.Equals(RqName.계좌평가현황요청))
             {
@@ -382,7 +347,153 @@ namespace MetelStockLib.core
                 {
                     Console.WriteLine(exception.Message);
                 }
-            } 
+            } else if (e.sRQName.Equals(RqName.자동매매당일거래상위요청))
+            {
+                // 3분마다 실행되는 자동매매 타입
+                int cnt = axKHOpenAPI.GetRepeatCnt(e.sTrCode, e.sRQName);
+
+                List<StockItem> stockList = new List<StockItem>();
+                for (int i = 0; i < cnt; i++)
+                {
+                    string itemCode = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "종목코드").Trim();
+                    string itemName = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "종목명").Trim();
+                    long currentPrice = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "현재가"));
+                    long netChange = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "전일대비"));
+                    double updownRate = double.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "등락률"));
+                    long volume = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "거래량"));
+
+                    if (itemName.StartsWith("KODEX")) continue;
+
+                    StockItem stockItem = new StockItem()
+                    {
+                        ItemCode = itemCode,
+                        ItemName = itemName,
+                        Price = currentPrice,
+                        NetChange = netChange,
+                        UpDownRate = updownRate,
+                        Volume = volume
+                    };
+                    stockList.Add(stockItem);
+
+                    if (stockList.Count > 100)
+                        break;
+                }
+                dbm.mergeListMfAtItem(getYmd(), stockList);
+                List<StockItem> autoStockList = dbm.getMfAtItem(getYmd());
+                foreach (StockItem item in autoStockList)
+                {
+                    RequestMinuteChartData(item.ItemCode, "3:3분", RqName.자동매매분봉차트요청);
+                    Console.WriteLine("자동매매 timer 시작 RequestMinuteChartData ::: " + item.ItemCode + "[" + DateTime.Now.ToString() + "]");
+                }
+            } else if (e.sRQName.Equals(RqName.자동매매거래대금상위요청))
+            {
+                // 5분마다 실행되는 자동매매 타입
+                int cnt = axKHOpenAPI.GetRepeatCnt(e.sTrCode, e.sRQName);
+
+                List<StockItem> stockList = new List<StockItem>();
+                for (int i = 0; i < cnt; i++)
+                {
+                    string itemCode = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "종목코드").Trim();
+                    string itemName = axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "종목명").Trim();
+                    long currentPrice = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "현재가"));
+                    long netChange = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "전일대비"));
+                    double updownRate = double.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "등락률"));
+                    long volume = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "현재거래량"));
+                    long bVolume = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "전일거래량"));
+                    long trAmt = long.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "거래대금"));
+                    int rnk = int.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "현재순위"));
+                    int brnk = int.Parse(axKHOpenAPI.GetCommData(e.sTrCode, e.sRQName, i, "전일순위"));
+
+                    if (itemName.StartsWith("KODEX")) continue;
+                    if(updownRate > 0)
+                    {
+                        StockItem stockItem = new StockItem()
+                        {
+                            ItemCode = itemCode,
+                            ItemName = itemName,
+                            Price = currentPrice,
+                            NetChange = netChange,
+                            UpDownRate = updownRate,
+                            Volume = volume,
+                            Bvolume = bVolume,
+                            TrAmount = trAmt,
+                            Rnk = rnk,
+                            Brnk = brnk
+                        };
+                        stockList.Add(stockItem);
+                    }
+
+                    if (stockList.Count > 100)
+                        break;
+                }
+                dbm.mergeListMfAtItem(getYmd(), stockList);
+                List<StockItem> autoStockList = dbm.getMfAtItem(getYmd());
+                foreach (StockItem item in autoStockList)
+                {
+                    RequestMinuteChartData(item.ItemCode, "5:5분", RqName.자동매매분봉차트요청);
+                    Console.WriteLine("자동매매 timer 시작 RequestMinuteChartData ::: " + item.ItemCode + "[" + DateTime.Now.ToString() + "]");
+                }
+            }
+        }
+        
+        private void AxKHOpenAPI_OnReceiveRealData(object sender, _DKHOpenAPIEvents_OnReceiveRealDataEvent e)
+        {
+            if (e.sRealType.Equals("주식체결"))
+            {
+                // "20;10;11;12;13;14;15;16;17;18;25;26;27;28;29;30;31;32;228;311;290";
+                string item_cd = e.sRealKey;
+                string 체결시간 = axKHOpenAPI.GetCommRealData(item_cd, 20); //체결시간
+                string 현재가 = axKHOpenAPI.GetCommRealData(item_cd, 10); //현재가
+                string 전일대비 = axKHOpenAPI.GetCommRealData(item_cd, 11); //전일대비
+                string 등락율 = axKHOpenAPI.GetCommRealData(item_cd, 12); //등락율
+                string 누적거래량 = axKHOpenAPI.GetCommRealData(item_cd, 13);
+                string 누적거래대금 = axKHOpenAPI.GetCommRealData(item_cd, 14);
+                string 거래량 = axKHOpenAPI.GetCommRealData(item_cd, 15);
+                string 시가 = axKHOpenAPI.GetCommRealData(item_cd, 16);
+                string 고가 = axKHOpenAPI.GetCommRealData(item_cd, 17);
+                string 저가 = axKHOpenAPI.GetCommRealData(item_cd, 18);
+                string 전일대비기호 = axKHOpenAPI.GetCommRealData(item_cd, 25);
+                string 전일거래량대비 = axKHOpenAPI.GetCommRealData(item_cd, 26);
+                string 최우선매도호가 = axKHOpenAPI.GetCommRealData(item_cd, 27);
+                string 최우선매수호가 = axKHOpenAPI.GetCommRealData(item_cd, 28);
+
+                string 거래대금증감 = axKHOpenAPI.GetCommRealData(item_cd, 29);
+                string 전일거래량대비비율 = axKHOpenAPI.GetCommRealData(item_cd, 30);
+                string 거래회전율 = axKHOpenAPI.GetCommRealData(item_cd, 31);
+                string 거래비용 = axKHOpenAPI.GetCommRealData(item_cd, 32);
+                string 체결강도 = axKHOpenAPI.GetCommRealData(item_cd, 228);
+                string 시가총액 = axKHOpenAPI.GetCommRealData(item_cd, 311);
+                string 장구분 = axKHOpenAPI.GetCommRealData(item_cd, 290);
+
+
+                string str = item_cd;
+                str += "체결시간 : " + 체결시간;
+                str += "현재가 : " + 현재가;
+                str += "전일대비 : " + 전일대비;
+                str += "등락율 : " + 등락율;
+                str += "시가 : " + 시가;
+                str += "고가 : " + 고가;
+                str += "저가 : " + 저가;
+                str += "거래량 : " + 거래량;
+                str += "체결강도 : " + 체결강도;
+                str += "장구분 : " + 장구분;
+                str += "최우선매도호가 : " + 최우선매도호가;
+                str += "최우선매수호가 : " + 최우선매수호가;
+                str += "누적거래량 : " + 누적거래량;
+                str += "누적거래대금 : " + 누적거래대금;
+                str += "전일대비기호 : " + 전일대비기호;
+                str += "전일거래량대비 : " + 전일거래량대비;
+                str += "거래대금증감 : " + 거래대금증감;
+                str += "전일거래량대비비율 : " + 전일거래량대비비율;
+                str += "거래회전율 : " + 거래회전율;
+                str += "거래비용 : " + 거래비용;
+                str += "시가총액 : " + 시가총액;
+                string ymdhm = DateTime.Now.ToString("yyyyMMdd") + 체결시간;
+                ChartData chart = new ChartData(Math.Abs(double.Parse(고가)), Math.Abs(double.Parse(저가)), Math.Abs(double.Parse(시가))
+                    , Math.Abs(double.Parse(현재가)), Math.Abs(long.Parse(거래량)), ymdhm);
+                dbm.mergeMfBunPrc(item_cd, "noname", chart);
+                SendLogMessage(str);
+            }
         }
 
         public void RequestRealReg()
@@ -546,7 +657,7 @@ namespace MetelStockLib.core
             requestTrDataManager.RequestTrData(requestAccountBalanceTask);
         }
 
-        public void RequestHighTodayVolume(string marketType, string sortBy="3")
+        public void RequestHighTodayVolume(bool isAutomatic,string marketType, string sortBy="3")
         {
             Task requestTask = new Task(() =>
             {
@@ -560,7 +671,7 @@ namespace MetelStockLib.core
                         _mt = "001";
                         break;
                     case "코스닥":
-                        _mt = "100";
+                        _mt = "101";
                         break;
                     default:
                         break;
@@ -574,19 +685,60 @@ namespace MetelStockLib.core
                 axKHOpenAPI.SetInputValue("거래대금구분", "0");
                 axKHOpenAPI.SetInputValue("장운영구분", "0");
 
-                const string rqName = RqName.당일거래량상위요청;
+                string rqName = (isAutomatic) ? RqName.자동매매당일거래상위요청 : RqName.당일거래량상위요청;
                 const string STrCode = "opt10030";
                 string sScreenNo = GetScreenNum();
                 int result = axKHOpenAPI.CommRqData(rqName, STrCode, 0, sScreenNo);
 
                 if (result == ErrorCode.정상처리)
                 {
-                    Console.WriteLine("당일거래량상위요청 성공");
-                    dbm.insertActH(rqName, STrCode, sScreenNo, "RequestHighTodayVolume", "");
+                    Console.WriteLine($"{rqName} 성공");
+                    // dbm.insertActH(rqName, STrCode, sScreenNo, "RequestHighTodayVolume", "");
                 }
                 else
                 {
-                    Console.WriteLine("당일거래량상위요청 실패");
+                    Console.WriteLine($"{rqName} 실패");
+                }
+            });
+
+            requestTrDataManager.RequestTrData(requestTask);
+        }
+
+        public void RequestHighVolume0186(bool isAutomatic, string marketType)
+        {
+            Task requestTask = new Task(() =>
+            {
+                string _mt = "";
+                switch (marketType)
+                {
+                    case "전체":
+                        _mt = "000";
+                        break;
+                    case "코스피":
+                        _mt = "001";
+                        break;
+                    case "코스닥":
+                        _mt = "101";
+                        break;
+                    default:
+                        break;
+                }
+                axKHOpenAPI.SetInputValue("시장구분", _mt);
+                axKHOpenAPI.SetInputValue("관리종목포함", "0"); // 관리종목 미포함
+
+                string rqName = (isAutomatic) ? RqName.자동매매거래대금상위요청 : RqName.거래대금상위요청;
+                const string STrCode = "opt10032";
+                string sScreenNo = GetScreenNum();
+                int result = axKHOpenAPI.CommRqData(rqName, STrCode, 0, sScreenNo);
+
+                if (result == ErrorCode.정상처리)
+                {
+                    Console.WriteLine($"{rqName} 성공");
+                    // dbm.insertActH(rqName, STrCode, sScreenNo, "RequestHighTodayVolume", "");
+                }
+                else
+                {
+                    Console.WriteLine($"{rqName} 실패");
                 }
             });
 

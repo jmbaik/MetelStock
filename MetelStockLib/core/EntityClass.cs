@@ -91,6 +91,7 @@ namespace MetelStockLib.core
         private long netChange = 0;
         private double upDownRate = 0;
         private long volume = 0;
+        private long bvolume = 0;
         private long openPrice = 0;
         private long highPrice = 0;
         private long lowPrice = 0;
@@ -100,6 +101,9 @@ namespace MetelStockLib.core
         private long ma60 = 0;
         private long ma120 = 0;
         private long ma240 = 0;
+        private int rnk = 0; //현재순위
+        private int brnk = 0; //전일순위
+        private long trAmount = 0; //거래대금
 
         public string ItemCode { get => itemCode; set => itemCode = value; }
         public string ItemName { get => itemName; set => itemName = value; }
@@ -116,6 +120,10 @@ namespace MetelStockLib.core
         public long Ma60 { get => ma60; set => ma60 = value; }
         public long Ma120 { get => ma120; set => ma120 = value; }
         public long Ma240 { get => ma240; set => ma240 = value; }
+        public long Bvolume { get => bvolume; set => bvolume = value; }
+        public int Rnk { get => rnk; set => rnk = value; }
+        public int Brnk { get => brnk; set => brnk = value; }
+        public long TrAmount { get => trAmount; set => trAmount = value; }
 
         public override string ToString()
         {
