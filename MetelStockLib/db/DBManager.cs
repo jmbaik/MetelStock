@@ -495,6 +495,59 @@ namespace MetelStockLib.db
                 cmd.ExecuteNonQuery();
             };
         }
-    }
 
+        public List<ATOrder> getMstForOrder(string ymd, string itemCode)
+        {
+            List<ATOrder> orderList = new List<ATOrder>();
+            using (OracleConnection connection = new OracleConnection(conn_str))
+            {
+                connection.Open();
+                using (OracleCommand cmd = new OracleCommand())
+                {
+                    string q = $@"
+                            SELECT A.YMD, A.ITEM_CD, B.ITEM_NM, A.MM_SEQ, A.MM_TYPE, A.MM_PRC, A.MM_QTY, A.YMDHM 
+                            FROM MF_AT_MST A , MF_AT_ITEM B
+                            WHERE A.YMD=B.YMD AND A.ITEM_CD=B.ITEM_CD AND A.YMD='{ymd}' AND A.ITEM_CD='{itemCode}' 
+                            AND A.YMDHM > TO_CHAR(SYSDATE-3/24/60,'YYYYMMDDHH24MISS')
+                                ";
+                    cmd.Connection = connection;
+                    cmd.CommandText = q;
+                    using (OracleDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ATOrder order = new ATOrder();
+                            order.일자 = reader["YMD"].ToString();
+                            order.종목코드 = reader["ITEM_CD"].ToString();
+                            order.종목명 = reader["ITEM_NM"].ToString();
+                            order.일련번호 = int.Parse(reader["MM_SEQ"].ToString());
+                            order.매매구분 = reader["MM_TYPE"].ToString();
+                            order.주문가격 = int.Parse(reader["MM_PRC"].ToString());
+                            order.주문수량 = int.Parse(reader["MM_QTY"].ToString());
+                            order.시간 = reader["YMDHM"].ToString();
+                            orderList.Add(order);
+                        }
+                    }
+                }
+            }
+            return orderList;
+        }
+
+        public void updateMstForOrder(ATOrder order)
+        {
+            using (OracleConnection connection = new OracleConnection(conn_str))
+            {
+                connection.Open();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connection;
+                string q = $@"update MF_AT_MST SET ACCT='{order.계좌}', CC_PRC={order.주문가격}, CC_QTY={order.주문수량}, CC_STATUS=1, CC_DT=SYSDATE
+                                WHERE YMD={order.일자} AND ITEM_CD={order.종목코드} AND MM_SEQ={order.일련번호} ";
+                cmd.CommandText = q;
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
+            };
+        }
+
+
+    }
 }

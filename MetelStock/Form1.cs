@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace MetelStock
         private string selectedDgs = "111"; //선택되어진 datagridvew 조합 급거 1 매도전락 1 백테스트 1
         private string itemCode = "";
         private string realItemCode = "";
+        private static int SEQ_TIMER = 0;
         public Form1()
         {
             InitializeComponent();
@@ -42,8 +44,10 @@ namespace MetelStock
             ost.OnReceivedLogMessage += UI_OnReceivedRealState;
             ost.OnReceivedItemInfo += UI_OnReceivedItemInfo;
             dbm.OnReceivedDBLogMessage += UI_OnReceivedDbLog;
-            
-            
+            ost.OnReceivedStockItems += UI_OnReceivedStockItems;
+            ost.OnReceivedAutoTradingOrderAccept += UI_OnReceivedAutoTradingOrderAccept;
+            ost.OnReceivedAutoTradingOrderConclusion += UI_OnReceivedAutoTradingOrderConclusion;
+            ost.OnReceivedOutstandingOrderList += UI_OnReceivedOutstandingOrderList;
 
             dg급거종목.CellClick += UI_OnCellClick;
             dg급거종목.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -56,7 +60,28 @@ namespace MetelStock
             btn검색사용자관심.Click += Btn_Click;
             btnReal.Click += Btn_Click;
             btnAtRealStart.Click += Btn_Click;
+            btn미체결현황조회.Click += Btn_Click;
 
+        }
+
+        private void UI_OnReceivedOutstandingOrderList(object sender, OnReceivedATOrderListEventArgs e)
+        {
+            dg미체결현황.DataSource = e.AtOrderList;
+        }
+
+        private void UI_OnReceivedAutoTradingOrderConclusion(object sender, OnReceivedATOrderEventArgs e)
+        {
+            dg실시간체결.Rows.Add(e.AtOrder);
+        }
+
+        private void UI_OnReceivedAutoTradingOrderAccept(object sender, OnReceivedATOrderEventArgs e)
+        {
+            dg실시간접수.Rows.Add(e.AtOrder);
+        }
+
+        private void UI_OnReceivedStockItems(object sender, OnReceivedStockItemsEventArgs e)
+        {
+            dgAtItem.DataSource = e.StockItemList;
         }
 
         private void UI_OnReceivedItemInfo(object sender, OnReceivedItemInfoEventArgs e)
@@ -115,12 +140,27 @@ namespace MetelStock
 
                 //실시간 자동매매 시작
                 System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-                timer.Interval = 5*60*1000;
+                timer.Interval = 3*60*1000;
                 timer.Tick += new EventHandler(Timer_AutoTrading);
                 timer.Start();
-                Console.WriteLine("btnAtrealstart timer start");
+                Console.WriteLine("btnAtrealstart timer start [" + DateTime.Now.ToString() + "]");
 
-            } else if (sender.Equals(btnReal))
+                /*
+                System.Timers.Timer timer = new System.Timers.Timer();
+                timer.Interval = 3 * 60 * 1000;
+                timer.Elapsed += new System.Timers.ElapsedEventHandler(Timer_AutoTrading);
+                timer.Start();
+                Console.WriteLine("btnAtrealstart timer start [" + DateTime.Now.ToString() + "]");
+                */
+
+                System.Windows.Forms.Timer itemTimer = new System.Windows.Forms.Timer();
+                itemTimer.Interval = 30 * 60 * 1000;
+                itemTimer.Tick += new EventHandler(ItemTimer_AutoTrading);
+                itemTimer.Start();
+                Console.WriteLine("itemTimer timer start [" + DateTime.Now.ToString() + "]");
+
+            }
+            else if (sender.Equals(btnReal))
             {
                 // 실시간 테스트 
                 ost.RequestRealReg();
@@ -138,10 +178,13 @@ namespace MetelStock
                     return;
                 }
                 ost.RequestItemInfo(searchItemCode);
+            } else if (sender.Equals(btn미체결현황조회))
+            {
+                // 미체결내역 요청
+                ost.RequestOutstandingOrderList();                
             }
 
         }
-
 
         private string formatOnlyNumber(object str)
         {
@@ -237,25 +280,33 @@ namespace MetelStock
         //*********** 자동 매매 파트 **********************************************************/
         private void Timer_AutoTrading(object sender, EventArgs e)
         {
-            ost.RequestHighVolume0186(true, "코스닥");
-
-            /*
+            DateTime logonTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 8, 30, 0);
+            if(DateTime.Now >= logonTime)
+            {
+                if (!ost.IsLogin())
+                {
+                    ost.Start();
+                    Console.WriteLine("Login auto start  [" + DateTime.Now.ToString() + "]");
+                }
+            }
             DateTime startDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
             if (DateTime.Now >= startDt)
             {
-                ost.RequestHighVolume0186(true, "코스닥");
+                ost.RequestAutoTrading();
             }
-            */
-            /*
-            List<StockItem> autoStockList = dbm.getMfAtItem();
-            foreach (StockItem item in autoStockList)
-            {
-                ost.RequestMinuteChartData(item.ItemCode, "3:3분", RqName.자동매매분봉차트요청);
-                Console.WriteLine("자동매매 timer 시작 RequestMinuteChartData ::: " + item.ItemCode + "[" + DateTime.Now.ToString() + "]");
-            }
-            */
-        
         }
+        private void ItemTimer_AutoTrading(object sender, EventArgs e)
+        {
+            // 당일거래량상위요청 분봉차트와는 별개로 움직이므로 false로 실행해야 한다.
+            DateTime startDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 1, 0);
+            if(DateTime.Now == startDt)
+            {
+                ost.RequestHighTodayVolume(false, "코스닥");
+                Console.WriteLine("Init ItemTimer timer start [" + DateTime.Now.ToString() + "]");
+            }
+            ost.RequestHighTodayVolume(false, "코스닥");
+        }
+        //************ end 자동 매매 파트 *******************************************************/
 
 
     }

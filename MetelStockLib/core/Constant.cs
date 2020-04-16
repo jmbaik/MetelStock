@@ -19,6 +19,8 @@ namespace MetelStockLib.core
         public const string 자동매매분봉차트요청 = "자동매매분봉차트요청"; //opt10080
         public const string 거래대금상위요청 = "거래대금상위요청";  //opt10032
         public const string 자동매매거래대금상위요청 = "자동매매거래대금상위요청";  //opt10032
+        public const string 주식주문 = "주식주문";
+        public const string 실시간미체결요청 = "실시간미체결요청";
 
     }
 

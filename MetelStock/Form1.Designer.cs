@@ -33,18 +33,12 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.메뉴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.로그인ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,35 +101,24 @@
             this.btn저장사용자관심 = new System.Windows.Forms.Button();
             this.txtSearchItemCode = new System.Windows.Forms.TextBox();
             this.tpAT = new System.Windows.Forms.TabPage();
-            this.axKHOpenAPI1 = new AxKHOpenAPILib.AxKHOpenAPI();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tableLayoutAtItem = new System.Windows.Forms.TableLayoutPanel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.txtAtItemName = new System.Windows.Forms.TextBox();
-            this.btnAtItemSearch = new System.Windows.Forms.Button();
-            this.metFinChart1 = new MetelStockLib.controls.MetFinChart();
             this.dgAtItem = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbAt관심종목 = new System.Windows.Forms.ComboBox();
-            this.btnAt당일급거 = new System.Windows.Forms.Button();
-            this.btnAt전일급거 = new System.Windows.Forms.Button();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.btnAtRealStart = new System.Windows.Forms.Button();
-            this.dgAtRItem = new System.Windows.Forms.DataGridView();
-            this.dgAt3M = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn24 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AtRItem_종목코드 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AtRItem_종목명 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnAt전일급거 = new System.Windows.Forms.Button();
+            this.btn미체결현황조회 = new System.Windows.Forms.Button();
+            this.cbAt관심종목 = new System.Windows.Forms.ComboBox();
+            this.btnAtItemSearch = new System.Windows.Forms.Button();
+            this.txtAtItemName = new System.Windows.Forms.TextBox();
+            this.axKHOpenAPI1 = new AxKHOpenAPILib.AxKHOpenAPI();
+            this.dgMfAtMst = new System.Windows.Forms.DataGridView();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.dg미체결현황 = new System.Windows.Forms.DataGridView();
+            this.dg실시간접수 = new System.Windows.Forms.DataGridView();
+            this.dg실시간체결 = new System.Windows.Forms.DataGridView();
+            this.metFinChart1 = new MetelStockLib.controls.MetFinChart();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMA.SuspendLayout();
@@ -158,25 +141,29 @@
             ((System.ComponentModel.ISupportInitialize)(this.dg사용자관심)).BeginInit();
             this.panel2.SuspendLayout();
             this.tpAT.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axKHOpenAPI1)).BeginInit();
+            this.tableLayoutPanel3.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tableLayoutAtItem.SuspendLayout();
-            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtItem)).BeginInit();
-            this.tableLayoutPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgAtRItem)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgAt3M)).BeginInit();
+            this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axKHOpenAPI1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgMfAtMst)).BeginInit();
+            this.tableLayoutPanel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dg미체결현황)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dg실시간접수)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dg실시간체결)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
+            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.메뉴ToolStripMenuItem,
             this.로그아웃ToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(2412, 40);
+            this.menuStrip1.Size = new System.Drawing.Size(2412, 48);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -185,7 +172,7 @@
             this.메뉴ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.로그인ToolStripMenuItem});
             this.메뉴ToolStripMenuItem.Name = "메뉴ToolStripMenuItem";
-            this.메뉴ToolStripMenuItem.Size = new System.Drawing.Size(83, 36);
+            this.메뉴ToolStripMenuItem.Size = new System.Drawing.Size(83, 44);
             this.메뉴ToolStripMenuItem.Text = "메뉴";
             // 
             // 로그인ToolStripMenuItem
@@ -199,7 +186,7 @@
             this.로그아웃ToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.로그아웃ToolStripMenuItem2});
             this.로그아웃ToolStripMenuItem1.Name = "로그아웃ToolStripMenuItem1";
-            this.로그아웃ToolStripMenuItem1.Size = new System.Drawing.Size(131, 36);
+            this.로그아웃ToolStripMenuItem1.Size = new System.Drawing.Size(131, 44);
             this.로그아웃ToolStripMenuItem1.Text = "로그아웃";
             // 
             // 로그아웃ToolStripMenuItem2
@@ -213,10 +200,10 @@
             this.tabControl1.Controls.Add(this.tpMA);
             this.tabControl1.Controls.Add(this.tpAT);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 40);
+            this.tabControl1.Location = new System.Drawing.Point(0, 48);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(2412, 1572);
+            this.tabControl1.Size = new System.Drawing.Size(2412, 1564);
             this.tabControl1.TabIndex = 2;
             // 
             // tpMA
@@ -240,7 +227,7 @@
             this.groupBox2.Controls.Add(this.tabControl2);
             this.groupBox2.Location = new System.Drawing.Point(6, 793);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(853, 700);
+            this.groupBox2.Size = new System.Drawing.Size(853, 692);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "전략";
@@ -254,7 +241,7 @@
             this.tabControl2.Location = new System.Drawing.Point(3, 31);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(847, 666);
+            this.tabControl2.Size = new System.Drawing.Size(847, 658);
             this.tabControl2.TabIndex = 0;
             // 
             // tpRealStage
@@ -263,7 +250,7 @@
             this.tpRealStage.Location = new System.Drawing.Point(8, 39);
             this.tpRealStage.Name = "tpRealStage";
             this.tpRealStage.Padding = new System.Windows.Forms.Padding(3);
-            this.tpRealStage.Size = new System.Drawing.Size(831, 619);
+            this.tpRealStage.Size = new System.Drawing.Size(831, 611);
             this.tpRealStage.TabIndex = 0;
             this.tpRealStage.Text = "실시간";
             this.tpRealStage.UseVisualStyleBackColor = true;
@@ -275,7 +262,7 @@
             this.lboxRealState.ItemHeight = 24;
             this.lboxRealState.Location = new System.Drawing.Point(3, 3);
             this.lboxRealState.Name = "lboxRealState";
-            this.lboxRealState.Size = new System.Drawing.Size(825, 613);
+            this.lboxRealState.Size = new System.Drawing.Size(825, 605);
             this.lboxRealState.TabIndex = 0;
             // 
             // tpStrategyBuy
@@ -283,7 +270,7 @@
             this.tpStrategyBuy.Location = new System.Drawing.Point(8, 39);
             this.tpStrategyBuy.Name = "tpStrategyBuy";
             this.tpStrategyBuy.Padding = new System.Windows.Forms.Padding(3);
-            this.tpStrategyBuy.Size = new System.Drawing.Size(831, 627);
+            this.tpStrategyBuy.Size = new System.Drawing.Size(831, 619);
             this.tpStrategyBuy.TabIndex = 1;
             this.tpStrategyBuy.Text = "매수전략";
             this.tpStrategyBuy.UseVisualStyleBackColor = true;
@@ -292,7 +279,7 @@
             // 
             this.tpStrategySell.Location = new System.Drawing.Point(8, 39);
             this.tpStrategySell.Name = "tpStrategySell";
-            this.tpStrategySell.Size = new System.Drawing.Size(831, 627);
+            this.tpStrategySell.Size = new System.Drawing.Size(831, 619);
             this.tpStrategySell.TabIndex = 2;
             this.tpStrategySell.Text = "매도전략";
             this.tpStrategySell.UseVisualStyleBackColor = true;
@@ -316,7 +303,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 500F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1475, 1468);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1475, 1460);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // panel1
@@ -459,7 +446,7 @@
             this.tabControl3.Controls.Add(this.tabPage5);
             this.tabControl3.Controls.Add(this.tp매수매도);
             this.tabControl3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl3.Location = new System.Drawing.Point(3, 966);
+            this.tabControl3.Location = new System.Drawing.Point(3, 958);
             this.tabControl3.Name = "tabControl3";
             this.tabControl3.SelectedIndex = 0;
             this.tabControl3.Size = new System.Drawing.Size(1469, 494);
@@ -837,25 +824,31 @@
             // 
             // tpAT
             // 
+            this.tpAT.Controls.Add(this.tableLayoutPanel4);
             this.tpAT.Controls.Add(this.tableLayoutPanel3);
             this.tpAT.Controls.Add(this.groupBox3);
             this.tpAT.Location = new System.Drawing.Point(8, 39);
             this.tpAT.Name = "tpAT";
             this.tpAT.Padding = new System.Windows.Forms.Padding(3);
-            this.tpAT.Size = new System.Drawing.Size(2396, 1525);
+            this.tpAT.Size = new System.Drawing.Size(2396, 1517);
             this.tpAT.TabIndex = 1;
             this.tpAT.Text = "실시간자동매매";
             this.tpAT.UseVisualStyleBackColor = true;
             // 
-            // axKHOpenAPI1
+            // tableLayoutPanel3
             // 
-            this.axKHOpenAPI1.Enabled = true;
-            this.axKHOpenAPI1.Location = new System.Drawing.Point(2040, 0);
-            this.axKHOpenAPI1.Name = "axKHOpenAPI1";
-            this.axKHOpenAPI1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axKHOpenAPI1.OcxState")));
-            this.axKHOpenAPI1.Size = new System.Drawing.Size(93, 40);
-            this.axKHOpenAPI1.TabIndex = 0;
-            this.axKHOpenAPI1.Visible = false;
+            this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel3.ColumnCount = 1;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.Controls.Add(this.dgMfAtMst, 0, 0);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(826, 37);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(1543, 745);
+            this.tableLayoutPanel3.TabIndex = 1;
             // 
             // groupBox3
             // 
@@ -882,69 +875,14 @@
             this.tableLayoutAtItem.Size = new System.Drawing.Size(755, 733);
             this.tableLayoutAtItem.TabIndex = 0;
             // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.btnAtRealStart);
-            this.panel3.Controls.Add(this.btnAt전일급거);
-            this.panel3.Controls.Add(this.btnAt당일급거);
-            this.panel3.Controls.Add(this.cbAt관심종목);
-            this.panel3.Controls.Add(this.btnAtItemSearch);
-            this.panel3.Controls.Add(this.txtAtItemName);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 3);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(749, 124);
-            this.panel3.TabIndex = 0;
-            // 
-            // txtAtItemName
-            // 
-            this.txtAtItemName.Location = new System.Drawing.Point(23, 18);
-            this.txtAtItemName.Name = "txtAtItemName";
-            this.txtAtItemName.Size = new System.Drawing.Size(242, 35);
-            this.txtAtItemName.TabIndex = 0;
-            // 
-            // btnAtItemSearch
-            // 
-            this.btnAtItemSearch.AutoSize = true;
-            this.btnAtItemSearch.BackColor = System.Drawing.Color.Transparent;
-            this.btnAtItemSearch.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.btnAtItemSearch.Font = new System.Drawing.Font("맑은 고딕", 7.875F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnAtItemSearch.Location = new System.Drawing.Point(619, 11);
-            this.btnAtItemSearch.Margin = new System.Windows.Forms.Padding(0);
-            this.btnAtItemSearch.Name = "btnAtItemSearch";
-            this.btnAtItemSearch.Size = new System.Drawing.Size(91, 42);
-            this.btnAtItemSearch.TabIndex = 1;
-            this.btnAtItemSearch.Text = "조회";
-            this.btnAtItemSearch.UseVisualStyleBackColor = false;
-            // 
-            // metFinChart1
-            // 
-            this.metFinChart1.DayMinute = "M";
-            this.metFinChart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metFinChart1.ItemCode = "";
-            this.metFinChart1.Location = new System.Drawing.Point(3, 78);
-            this.metFinChart1.MaTerm = "20";
-            this.metFinChart1.Name = "metFinChart1";
-            this.metFinChart1.Size = new System.Drawing.Size(1469, 882);
-            this.metFinChart1.TabIndex = 2;
-            this.metFinChart1.TickType = "3:3분";
-            this.metFinChart1.Ymd = "";
-            // 
             // dgAtItem
             // 
             this.dgAtItem.AllowUserToAddRows = false;
             this.dgAtItem.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle12.BackColor = System.Drawing.Color.Ivory;
-            this.dgAtItem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.Ivory;
+            this.dgAtItem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dgAtItem.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgAtItem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgAtItem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn7,
-            this.dataGridViewTextBoxColumn8,
-            this.dataGridViewTextBoxColumn9,
-            this.dataGridViewTextBoxColumn10,
-            this.dataGridViewTextBoxColumn11,
-            this.dataGridViewTextBoxColumn12});
             this.dgAtItem.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgAtItem.Location = new System.Drawing.Point(3, 133);
             this.dgAtItem.Name = "dgAtItem";
@@ -955,109 +893,19 @@
             this.dgAtItem.Size = new System.Drawing.Size(749, 597);
             this.dgAtItem.TabIndex = 1;
             // 
-            // dataGridViewTextBoxColumn7
+            // panel3
             // 
-            this.dataGridViewTextBoxColumn7.HeaderText = "종목코드";
-            this.dataGridViewTextBoxColumn7.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            this.dataGridViewTextBoxColumn7.ReadOnly = true;
-            this.dataGridViewTextBoxColumn7.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn8
-            // 
-            this.dataGridViewTextBoxColumn8.HeaderText = "종목명";
-            this.dataGridViewTextBoxColumn8.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            this.dataGridViewTextBoxColumn8.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn9
-            // 
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle13;
-            this.dataGridViewTextBoxColumn9.HeaderText = "현재가";
-            this.dataGridViewTextBoxColumn9.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn10
-            // 
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle14;
-            this.dataGridViewTextBoxColumn10.HeaderText = "대비";
-            this.dataGridViewTextBoxColumn10.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            this.dataGridViewTextBoxColumn10.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn11
-            // 
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewTextBoxColumn11.DefaultCellStyle = dataGridViewCellStyle15;
-            this.dataGridViewTextBoxColumn11.HeaderText = "등락률";
-            this.dataGridViewTextBoxColumn11.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            this.dataGridViewTextBoxColumn11.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn12
-            // 
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewTextBoxColumn12.DefaultCellStyle = dataGridViewCellStyle16;
-            this.dataGridViewTextBoxColumn12.HeaderText = "거래량";
-            this.dataGridViewTextBoxColumn12.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            this.dataGridViewTextBoxColumn12.ReadOnly = true;
-            // 
-            // cbAt관심종목
-            // 
-            this.cbAt관심종목.FormattingEnabled = true;
-            this.cbAt관심종목.Location = new System.Drawing.Point(305, 18);
-            this.cbAt관심종목.Name = "cbAt관심종목";
-            this.cbAt관심종목.Size = new System.Drawing.Size(276, 32);
-            this.cbAt관심종목.TabIndex = 2;
-            this.cbAt관심종목.Text = "관심종목";
-            // 
-            // btnAt당일급거
-            // 
-            this.btnAt당일급거.AutoSize = true;
-            this.btnAt당일급거.BackColor = System.Drawing.Color.Transparent;
-            this.btnAt당일급거.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.btnAt당일급거.Font = new System.Drawing.Font("맑은 고딕", 7.875F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnAt당일급거.Location = new System.Drawing.Point(23, 67);
-            this.btnAt당일급거.Margin = new System.Windows.Forms.Padding(0);
-            this.btnAt당일급거.Name = "btnAt당일급거";
-            this.btnAt당일급거.Size = new System.Drawing.Size(248, 42);
-            this.btnAt당일급거.TabIndex = 3;
-            this.btnAt당일급거.Text = "당일거래량급증";
-            this.btnAt당일급거.UseVisualStyleBackColor = false;
-            // 
-            // btnAt전일급거
-            // 
-            this.btnAt전일급거.AutoSize = true;
-            this.btnAt전일급거.BackColor = System.Drawing.Color.Transparent;
-            this.btnAt전일급거.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.btnAt전일급거.Font = new System.Drawing.Font("맑은 고딕", 7.875F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.btnAt전일급거.Location = new System.Drawing.Point(301, 67);
-            this.btnAt전일급거.Margin = new System.Windows.Forms.Padding(0);
-            this.btnAt전일급거.Name = "btnAt전일급거";
-            this.btnAt전일급거.Size = new System.Drawing.Size(248, 42);
-            this.btnAt전일급거.TabIndex = 4;
-            this.btnAt전일급거.Text = "전일거래량급증";
-            this.btnAt전일급거.UseVisualStyleBackColor = false;
-            // 
-            // tableLayoutPanel3
-            // 
-            this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 370F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Controls.Add(this.dgAt3M, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.dgAtRItem, 0, 0);
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(826, 37);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 1;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(1543, 745);
-            this.tableLayoutPanel3.TabIndex = 1;
+            this.panel3.Controls.Add(this.btnAtRealStart);
+            this.panel3.Controls.Add(this.btnAt전일급거);
+            this.panel3.Controls.Add(this.btn미체결현황조회);
+            this.panel3.Controls.Add(this.cbAt관심종목);
+            this.panel3.Controls.Add(this.btnAtItemSearch);
+            this.panel3.Controls.Add(this.txtAtItemName);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 3);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(749, 124);
+            this.panel3.TabIndex = 0;
             // 
             // btnAtRealStart
             // 
@@ -1074,116 +922,177 @@
             this.btnAtRealStart.Text = "실시간시작";
             this.btnAtRealStart.UseVisualStyleBackColor = false;
             // 
-            // dgAtRItem
+            // btnAt전일급거
             // 
-            this.dgAtRItem.AllowUserToAddRows = false;
-            this.dgAtRItem.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.Ivory;
-            this.dgAtRItem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
-            this.dgAtRItem.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgAtRItem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgAtRItem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.AtRItem_종목코드,
-            this.AtRItem_종목명});
-            this.dgAtRItem.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgAtRItem.Location = new System.Drawing.Point(3, 3);
-            this.dgAtRItem.Name = "dgAtRItem";
-            this.dgAtRItem.RowHeadersVisible = false;
-            this.dgAtRItem.RowHeadersWidth = 82;
-            this.dgAtRItem.RowTemplate.Height = 30;
-            this.dgAtRItem.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgAtRItem.Size = new System.Drawing.Size(364, 739);
-            this.dgAtRItem.TabIndex = 2;
+            this.btnAt전일급거.AutoSize = true;
+            this.btnAt전일급거.BackColor = System.Drawing.Color.Transparent;
+            this.btnAt전일급거.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.btnAt전일급거.Font = new System.Drawing.Font("맑은 고딕", 7.875F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnAt전일급거.Location = new System.Drawing.Point(301, 67);
+            this.btnAt전일급거.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAt전일급거.Name = "btnAt전일급거";
+            this.btnAt전일급거.Size = new System.Drawing.Size(248, 42);
+            this.btnAt전일급거.TabIndex = 4;
+            this.btnAt전일급거.Text = "전일거래량급증";
+            this.btnAt전일급거.UseVisualStyleBackColor = false;
             // 
-            // dgAt3M
+            // btn미체결현황조회
             // 
-            this.dgAt3M.AllowUserToAddRows = false;
-            this.dgAt3M.AllowUserToDeleteRows = false;
+            this.btn미체결현황조회.AutoSize = true;
+            this.btn미체결현황조회.BackColor = System.Drawing.Color.Transparent;
+            this.btn미체결현황조회.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.btn미체결현황조회.Font = new System.Drawing.Font("맑은 고딕", 7.875F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btn미체결현황조회.Location = new System.Drawing.Point(23, 67);
+            this.btn미체결현황조회.Margin = new System.Windows.Forms.Padding(0);
+            this.btn미체결현황조회.Name = "btn미체결현황조회";
+            this.btn미체결현황조회.Size = new System.Drawing.Size(248, 42);
+            this.btn미체결현황조회.TabIndex = 3;
+            this.btn미체결현황조회.Text = "미체결현황조회";
+            this.btn미체결현황조회.UseVisualStyleBackColor = false;
+            // 
+            // cbAt관심종목
+            // 
+            this.cbAt관심종목.FormattingEnabled = true;
+            this.cbAt관심종목.Location = new System.Drawing.Point(305, 18);
+            this.cbAt관심종목.Name = "cbAt관심종목";
+            this.cbAt관심종목.Size = new System.Drawing.Size(276, 32);
+            this.cbAt관심종목.TabIndex = 2;
+            this.cbAt관심종목.Text = "관심종목";
+            // 
+            // btnAtItemSearch
+            // 
+            this.btnAtItemSearch.AutoSize = true;
+            this.btnAtItemSearch.BackColor = System.Drawing.Color.Transparent;
+            this.btnAtItemSearch.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.btnAtItemSearch.Font = new System.Drawing.Font("맑은 고딕", 7.875F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btnAtItemSearch.Location = new System.Drawing.Point(619, 11);
+            this.btnAtItemSearch.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAtItemSearch.Name = "btnAtItemSearch";
+            this.btnAtItemSearch.Size = new System.Drawing.Size(91, 42);
+            this.btnAtItemSearch.TabIndex = 1;
+            this.btnAtItemSearch.Text = "조회";
+            this.btnAtItemSearch.UseVisualStyleBackColor = false;
+            // 
+            // txtAtItemName
+            // 
+            this.txtAtItemName.Location = new System.Drawing.Point(23, 18);
+            this.txtAtItemName.Name = "txtAtItemName";
+            this.txtAtItemName.Size = new System.Drawing.Size(242, 35);
+            this.txtAtItemName.TabIndex = 0;
+            // 
+            // axKHOpenAPI1
+            // 
+            this.axKHOpenAPI1.Enabled = true;
+            this.axKHOpenAPI1.Location = new System.Drawing.Point(2040, 0);
+            this.axKHOpenAPI1.Name = "axKHOpenAPI1";
+            this.axKHOpenAPI1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axKHOpenAPI1.OcxState")));
+            this.axKHOpenAPI1.Size = new System.Drawing.Size(93, 40);
+            this.axKHOpenAPI1.TabIndex = 0;
+            this.axKHOpenAPI1.Visible = false;
+            // 
+            // dgMfAtMst
+            // 
+            this.dgMfAtMst.AllowUserToAddRows = false;
+            this.dgMfAtMst.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.Ivory;
+            this.dgMfAtMst.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle9;
+            this.dgMfAtMst.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgMfAtMst.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgMfAtMst.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgMfAtMst.Location = new System.Drawing.Point(3, 3);
+            this.dgMfAtMst.Name = "dgMfAtMst";
+            this.dgMfAtMst.RowHeadersVisible = false;
+            this.dgMfAtMst.RowHeadersWidth = 82;
+            this.dgMfAtMst.RowTemplate.Height = 30;
+            this.dgMfAtMst.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgMfAtMst.Size = new System.Drawing.Size(1537, 739);
+            this.dgMfAtMst.TabIndex = 2;
+            // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel4.ColumnCount = 3;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel4.Controls.Add(this.dg실시간체결, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.dg실시간접수, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.dg미체결현황, 0, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(21, 811);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 1;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(2345, 684);
+            this.tableLayoutPanel4.TabIndex = 2;
+            // 
+            // dg미체결현황
+            // 
+            this.dg미체결현황.AllowUserToAddRows = false;
+            this.dg미체결현황.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.Ivory;
+            this.dg미체결현황.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle8;
+            this.dg미체결현황.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dg미체결현황.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dg미체결현황.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dg미체결현황.Location = new System.Drawing.Point(3, 3);
+            this.dg미체결현황.Name = "dg미체결현황";
+            this.dg미체결현황.RowHeadersVisible = false;
+            this.dg미체결현황.RowHeadersWidth = 82;
+            this.dg미체결현황.RowTemplate.Height = 30;
+            this.dg미체결현황.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dg미체결현황.Size = new System.Drawing.Size(775, 678);
+            this.dg미체결현황.TabIndex = 2;
+            // 
+            // dg실시간접수
+            // 
+            this.dg실시간접수.AllowUserToAddRows = false;
+            this.dg실시간접수.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Ivory;
+            this.dg실시간접수.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            this.dg실시간접수.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dg실시간접수.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dg실시간접수.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dg실시간접수.Location = new System.Drawing.Point(784, 3);
+            this.dg실시간접수.Name = "dg실시간접수";
+            this.dg실시간접수.RowHeadersVisible = false;
+            this.dg실시간접수.RowHeadersWidth = 82;
+            this.dg실시간접수.RowTemplate.Height = 30;
+            this.dg실시간접수.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dg실시간접수.Size = new System.Drawing.Size(775, 678);
+            this.dg실시간접수.TabIndex = 3;
+            // 
+            // dg실시간체결
+            // 
+            this.dg실시간체결.AllowUserToAddRows = false;
+            this.dg실시간체결.AllowUserToDeleteRows = false;
             dataGridViewCellStyle6.BackColor = System.Drawing.Color.Ivory;
-            this.dgAt3M.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
-            this.dgAt3M.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgAt3M.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgAt3M.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn19,
-            this.dataGridViewTextBoxColumn20,
-            this.dataGridViewTextBoxColumn21,
-            this.dataGridViewTextBoxColumn22,
-            this.dataGridViewTextBoxColumn23,
-            this.dataGridViewTextBoxColumn24});
-            this.dgAt3M.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgAt3M.Location = new System.Drawing.Point(373, 3);
-            this.dgAt3M.Name = "dgAt3M";
-            this.dgAt3M.RowHeadersVisible = false;
-            this.dgAt3M.RowHeadersWidth = 82;
-            this.dgAt3M.RowTemplate.Height = 30;
-            this.dgAt3M.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgAt3M.Size = new System.Drawing.Size(1167, 739);
-            this.dgAt3M.TabIndex = 3;
+            this.dg실시간체결.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            this.dg실시간체결.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dg실시간체결.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dg실시간체결.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dg실시간체결.Location = new System.Drawing.Point(1565, 3);
+            this.dg실시간체결.Name = "dg실시간체결";
+            this.dg실시간체결.RowHeadersVisible = false;
+            this.dg실시간체결.RowHeadersWidth = 82;
+            this.dg실시간체결.RowTemplate.Height = 30;
+            this.dg실시간체결.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dg실시간체결.Size = new System.Drawing.Size(777, 678);
+            this.dg실시간체결.TabIndex = 4;
             // 
-            // dataGridViewTextBoxColumn19
+            // metFinChart1
             // 
-            this.dataGridViewTextBoxColumn19.HeaderText = "종목코드";
-            this.dataGridViewTextBoxColumn19.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn19.Name = "dataGridViewTextBoxColumn19";
-            this.dataGridViewTextBoxColumn19.ReadOnly = true;
-            this.dataGridViewTextBoxColumn19.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn20
-            // 
-            this.dataGridViewTextBoxColumn20.HeaderText = "종목명";
-            this.dataGridViewTextBoxColumn20.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn20.Name = "dataGridViewTextBoxColumn20";
-            this.dataGridViewTextBoxColumn20.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn21
-            // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewTextBoxColumn21.DefaultCellStyle = dataGridViewCellStyle7;
-            this.dataGridViewTextBoxColumn21.HeaderText = "현재가";
-            this.dataGridViewTextBoxColumn21.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn21.Name = "dataGridViewTextBoxColumn21";
-            this.dataGridViewTextBoxColumn21.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn22
-            // 
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewTextBoxColumn22.DefaultCellStyle = dataGridViewCellStyle8;
-            this.dataGridViewTextBoxColumn22.HeaderText = "대비";
-            this.dataGridViewTextBoxColumn22.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn22.Name = "dataGridViewTextBoxColumn22";
-            this.dataGridViewTextBoxColumn22.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn23
-            // 
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewTextBoxColumn23.DefaultCellStyle = dataGridViewCellStyle9;
-            this.dataGridViewTextBoxColumn23.HeaderText = "등락률";
-            this.dataGridViewTextBoxColumn23.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn23.Name = "dataGridViewTextBoxColumn23";
-            this.dataGridViewTextBoxColumn23.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn24
-            // 
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewTextBoxColumn24.DefaultCellStyle = dataGridViewCellStyle10;
-            this.dataGridViewTextBoxColumn24.HeaderText = "거래량";
-            this.dataGridViewTextBoxColumn24.MinimumWidth = 10;
-            this.dataGridViewTextBoxColumn24.Name = "dataGridViewTextBoxColumn24";
-            this.dataGridViewTextBoxColumn24.ReadOnly = true;
-            // 
-            // AtRItem_종목코드
-            // 
-            this.AtRItem_종목코드.HeaderText = "종목코드";
-            this.AtRItem_종목코드.MinimumWidth = 10;
-            this.AtRItem_종목코드.Name = "AtRItem_종목코드";
-            this.AtRItem_종목코드.ReadOnly = true;
-            // 
-            // AtRItem_종목명
-            // 
-            this.AtRItem_종목명.HeaderText = "종목명";
-            this.AtRItem_종목명.MinimumWidth = 10;
-            this.AtRItem_종목명.Name = "AtRItem_종목명";
-            this.AtRItem_종목명.ReadOnly = true;
+            this.metFinChart1.DayMinute = "M";
+            this.metFinChart1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.metFinChart1.ItemCode = "";
+            this.metFinChart1.Location = new System.Drawing.Point(3, 78);
+            this.metFinChart1.MaTerm = "20";
+            this.metFinChart1.Name = "metFinChart1";
+            this.metFinChart1.Size = new System.Drawing.Size(1469, 874);
+            this.metFinChart1.TabIndex = 2;
+            this.metFinChart1.TickType = "3:3분";
+            this.metFinChart1.Ymd = "";
             // 
             // Form1
             // 
@@ -1221,15 +1130,18 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.tpAT.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.axKHOpenAPI1)).EndInit();
+            this.tableLayoutPanel3.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.tableLayoutAtItem.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgAtItem)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgAtItem)).EndInit();
-            this.tableLayoutPanel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgAtRItem)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgAt3M)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axKHOpenAPI1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgMfAtMst)).EndInit();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dg미체결현황)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dg실시간접수)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dg실시간체결)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1307,27 +1219,16 @@
         private System.Windows.Forms.Button btnAtItemSearch;
         private System.Windows.Forms.TextBox txtAtItemName;
         private System.Windows.Forms.DataGridView dgAtItem;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
         private System.Windows.Forms.Button btnAt전일급거;
-        private System.Windows.Forms.Button btnAt당일급거;
+        private System.Windows.Forms.Button btn미체결현황조회;
         private System.Windows.Forms.ComboBox cbAt관심종목;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Button btnAtRealStart;
-        private System.Windows.Forms.DataGridView dgAt3M;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn22;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn23;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn24;
-        private System.Windows.Forms.DataGridView dgAtRItem;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AtRItem_종목코드;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AtRItem_종목명;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.DataGridView dg실시간체결;
+        private System.Windows.Forms.DataGridView dg실시간접수;
+        private System.Windows.Forms.DataGridView dg미체결현황;
+        private System.Windows.Forms.DataGridView dgMfAtMst;
     }
 }
 

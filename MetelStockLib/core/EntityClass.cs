@@ -124,27 +124,54 @@ namespace MetelStockLib.core
         public int Rnk { get => rnk; set => rnk = value; }
         public int Brnk { get => brnk; set => brnk = value; }
         public long TrAmount { get => trAmount; set => trAmount = value; }
-
-        public override string ToString()
+        public StockItem()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"itemCode:{itemCode} ");
-            sb.Append($"itemName:{itemName} ");
-            sb.Append($"price:{price} ");
-            sb.Append($"netChange:{netChange} ");
-            sb.Append($"upDownRate:{upDownRate} ");
-            sb.Append($"volume:{volume} ");
-            sb.Append($"openPrice:{openPrice} ");
-            sb.Append($"highPrice:{highPrice} ");
-            sb.Append($"lowPrice:{lowPrice} ");
-            sb.Append($"ma5:{ma5} ");
-            sb.Append($"ma10:{ma10} ");
-            sb.Append($"ma20:{ma20} ");
-            sb.Append($"ma60:{ma60} ");
-            sb.Append($"ma120:{ma120} ");
-            sb.Append($"ma240:{ma240} ");
-            return sb.ToString();
         }
     }
-    
+
+    [Serializable]
+    public class ATOrder
+    {
+        public string 일자 { get; set; }
+        public string 주문번호 { get; set; }
+        public string 원주문번호 { get; set; }
+        public int 일련번호 { get; set; }
+        public string 종목코드 { get; set; }
+        public string 종목명 { get; set; }
+        public int 주문수량 { get; set; }
+        public int 주문가격 { get; set; }
+        public int 현재가 { get; set; }
+        public int 미체결수량 { get; set; }
+        public string 매매구분 { get; set; }
+        public string 계좌 { get; set; }
+        public int 상태 { get; set; }
+        public string 시간 { get; set; }
+
+        public ATOrder()
+        {
+        }
+    }
+
+    [Serializable]
+    class StockBalance
+    {
+        public string itemCode { get; set; }
+        public string itemName { get; set; }
+        public double Amount { get; set; }
+        public double BuyingPrice { get; set; }
+        public double CurrentPrice { get; set; }
+        public double EstimatedProfit { get; set; }
+        public double ProfitRate { get; set; }
+        public StockBalance(string 종목번호, string 종목명, double 보유수량, double 매입가, double 현재가, double 평가손익, double 수익률)
+        {
+            this.itemCode = 종목번호;
+            this.itemName = 종목명;
+            this.Amount = 보유수량;
+            this.BuyingPrice = 매입가;
+            this.CurrentPrice = 현재가;
+            this.EstimatedProfit = 평가손익;
+            this.ProfitRate = 수익률;
+        }
+    }
+
 }

@@ -189,4 +189,28 @@ namespace MetelStockLib.core
             this.Message = "종목 정보를 가져왔습니다";
         }
     }
+
+    public class OnReceivedATOrderListEventArgs : EventArgs
+    {
+        public List<ATOrder> AtOrderList { get; set; }
+        public string Message { get; set; }
+
+        public OnReceivedATOrderListEventArgs(List<ATOrder> atOrderList)
+        {
+            this.AtOrderList = atOrderList;
+            this.Message = "자동매매 오더리스트를 가져왔습니다.";
+        }
+    }
+
+    public class OnReceivedATOrderEventArgs : EventArgs
+    {
+        public ATOrder AtOrder { get; set; }
+        public string Message { get; set; }
+
+        public OnReceivedATOrderEventArgs(ATOrder atOrder)
+        {
+            this.AtOrder = atOrder;
+            this.Message = "자동매매 오더를 가져왔습니다.";
+        }
+    }
 }
