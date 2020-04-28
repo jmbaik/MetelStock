@@ -51,6 +51,12 @@
     <Compile Include="controls\MetFinChart.Designer.cs">
       <DependentUpon>MetFinChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="controls\MetKOrderGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="controls\MetKOrderGrid.Designer.cs">
+      <DependentUpon>MetKOrderGrid.cs</DependentUpon>
+    </Compile>
     <Compile Include="core\Constant.cs" />
     <Compile Include="core\EntityClass.cs" />
     <Compile Include="core\EventArgs.cs" />
@@ -82,6 +88,9 @@
   <ItemGroup>
     <EmbeddedResource Include="controls\MetFinChart.resx">
       <DependentUpon>MetFinChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="controls\MetKOrderGrid.resx">
+      <DependentUpon>MetKOrderGrid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

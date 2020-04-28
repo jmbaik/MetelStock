@@ -398,7 +398,9 @@ namespace MetelStockLib.db
                             {dic["ma20"]} as MA20,
                             {dic["bma20"]} as BMA20,
                             {dic["ma60"]} as MA60,
-                            {dic["ma120"]} as MA120
+                            {dic["ma120"]} as MA120,
+                            {dic["bprc"]} as BPRC,
+                            {dic["s9_prc"]} as S9_PRC
                           From Dual) s
                         ON
                           (d.YMDHM = s.YMDHM and 
@@ -421,6 +423,8 @@ namespace MetelStockLib.db
                           d.BMA20 = s.BMA20,
                           d.MA60 = s.MA60,
                           d.MA120 = s.MA120,
+                          d.BPRC = s.BPRC,
+                          d.S9_PRC = s.S9_PRC,
                           d.UPD_ID = 'auto',
                           d.UPD_DT = sysdate
                         WHEN NOT MATCHED
@@ -430,13 +434,13 @@ namespace MetelStockLib.db
                           S_PRC, H_PRC, L_PRC,
                           VOL, BVOL, VOL_BRT,
                           MA5, BMA5, MA10, BMA10, MA20, BMA20,
-                          MA60, MA120, REG_ID, REG_DT)
+                          MA60, MA120, BPRC, S9_PRC, REG_ID, REG_DT)
                         VALUES (
                           s.YMDHM, s.ITEM_CD, s.PRC,
                           s.S_PRC, s.H_PRC, s.L_PRC,
                           s.VOL, s.BVOL, ROUND(decode(s.BVOL,0,0,s.VOL/s.BVOL),2),
                           s.MA5, s.BMA5, s.MA10, s.BMA10, s.MA20, s.BMA20,
-                          s.MA60, s.MA120, 'auto', sysdate)
+                          s.MA60, s.MA120, s.BPRC, s.S9_PRC, 'auto', sysdate)
                     ";
             return query;
         }
@@ -455,20 +459,28 @@ namespace MetelStockLib.db
                 connection.Open();
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = connection;
+                long s9_prc = 0;
                 for (int i = cnt-1; i>= 0; i--)
                 {
                     ChartData chart = chartDataList[i];
                     Dictionary<string, long> ma = new Dictionary<string, long>();
                     ma["bvol"] = i == (cnt - 1) ? 0 : chartDataList[i + 1].Volume;
-                    ma["bma5"] = i == (cnt - 1) ? 0 : Convert.ToInt64(maverage(c_arr, i+1, 5));
+                    ma["bma5"] = i == (cnt - 1) ? 0 : Convert.ToInt64(maverage(c_arr, i + 1, 5));
                     ma["bma10"] = i == (cnt - 1) ? 0 : Convert.ToInt64(maverage(c_arr, i + 1, 10));
                     ma["bma20"] = i == (cnt - 1) ? 0 : Convert.ToInt64(maverage(c_arr, i + 1, 20));
+                    ma["bprc"] = i == (cnt - 1) ? 0 : Convert.ToInt64(c_arr[i + 1]);
+                    if (chart.Time.Substring(8, 6).Equals("090000"))
+                    {
+                        s9_prc = Convert.ToInt64(chart.ClosePrice);
+                    }
+                    ma["s9_prc"] = s9_prc;
                     ma["ma5"] = Convert.ToInt64(maverage(c_arr, i, 5));
                     ma["ma10"] = Convert.ToInt64(maverage(c_arr, i, 10));
                     ma["ma20"] = Convert.ToInt64(maverage(c_arr, i, 20));
                     ma["ma60"] = Convert.ToInt64(maverage(c_arr, i, 60));
                     ma["ma120"] = Convert.ToInt64(maverage(c_arr, i, 120));
                     ma["ma240"] = Convert.ToInt64(maverage(c_arr, i, 240));
+                    
                     string q = queryMergeAT3M(itemCode, chart, ma);
                     cmd.CommandText = q;
                     cmd.CommandType = CommandType.Text;

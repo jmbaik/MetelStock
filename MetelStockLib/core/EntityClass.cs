@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oracle.ManagedDataAccess.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,15 @@ using System.Threading.Tasks;
 
 namespace MetelStockLib.core
 {
+    public enum PriceType
+    {
+        지정가=0, 시장가=3, 조건부지정가=5, 최유리지정가=6, 최우선지정가=7,지정가IOC=10, 시장가IOC=13,최유리IOC=16, 지정가FOK=20,시장가FOK=23,최유리FOK=26
+            ,장전시간외종가=61,시간외단일가매매=62, 장후시간외종가=81
+    }
+    public enum MMType
+    {
+        신규매수=1, 신규매도=2, 매수취소=3, 매도취소=4, 매수정정=5, 매도정정=6
+    }
     public class UserInfo
     {
         public string UserName { get; set; } //사용자명
@@ -132,11 +142,15 @@ namespace MetelStockLib.core
     [Serializable]
     public class ATOrder
     {
+        private string itemCode = "";
         public string 일자 { get; set; }
         public string 주문번호 { get; set; }
         public string 원주문번호 { get; set; }
         public int 일련번호 { get; set; }
-        public string 종목코드 { get; set; }
+        public string 종목코드 { 
+            get { return itemCode.Replace("A", ""); } 
+            set { itemCode = value; } 
+        }
         public string 종목명 { get; set; }
         public int 주문수량 { get; set; }
         public int 주문가격 { get; set; }
@@ -146,6 +160,22 @@ namespace MetelStockLib.core
         public string 계좌 { get; set; }
         public int 상태 { get; set; }
         public string 시간 { get; set; }
+        public string 계좌번호 { get; set; }
+        public int 보유수량 { get; set; }
+        public int 주문가능수량 { get; set; }
+        public int 매입단가 { get; set; }
+        public int 총매입가 {get; set;}
+        public double 손익률 {get; set;}
+        public string 체결시간 { get; set; }
+        public int 단위체결량 { get; set; }
+        public int 누적체결량 { get; set; }
+        public int 체결가 { get; set; }
+        public int 체결량 { get; set; }
+        public string 가격구분 { get; set; }
+        public string 주문시간 { get; set; }
+        public string 주문구분 { get; set; }
+        public string 거래구분 { get; set; }
+        public string 진행상황 { get; set; }
 
         public ATOrder()
         {

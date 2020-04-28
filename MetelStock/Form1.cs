@@ -21,7 +21,7 @@ namespace MetelStock
         private string selectedDgs = "111"; //선택되어진 datagridvew 조합 급거 1 매도전락 1 백테스트 1
         private string itemCode = "";
         private string realItemCode = "";
-        private static int SEQ_TIMER = 0;
+        private static bool TEST_MODE = false;
         public Form1()
         {
             InitializeComponent();
@@ -66,17 +66,19 @@ namespace MetelStock
 
         private void UI_OnReceivedOutstandingOrderList(object sender, OnReceivedATOrderListEventArgs e)
         {
-            dg미체결현황.DataSource = e.AtOrderList;
+            
         }
 
         private void UI_OnReceivedAutoTradingOrderConclusion(object sender, OnReceivedATOrderEventArgs e)
         {
-            dg실시간체결.Rows.Add(e.AtOrder);
+            //dg실시간체결.Rows.Add(e.AtOrder);
+            Console.WriteLine("dg실시간체결.Rows.Add(e.AtOrder)");
         }
 
         private void UI_OnReceivedAutoTradingOrderAccept(object sender, OnReceivedATOrderEventArgs e)
         {
-            dg실시간접수.Rows.Add(e.AtOrder);
+            //dg실시간접수.Rows.Add(e.AtOrder);
+            Console.WriteLine("dg실시간접수.Rows.Add(e.AtOrder)");
         }
 
         private void UI_OnReceivedStockItems(object sender, OnReceivedStockItemsEventArgs e)
@@ -137,7 +139,11 @@ namespace MetelStock
             } else if (sender.Equals(btnAtRealStart)) {
                 // 대상 종목 백업 실행
                 //dbm.moveHistoryMfAtItem();
-
+                if (!ost.IsLogin())
+                {
+                    ost.Start();
+                    Console.WriteLine("Login auto start  [" + DateTime.Now.ToString() + "]");
+                }
                 //실시간 자동매매 시작
                 System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
                 timer.Interval = 3*60*1000;
@@ -289,9 +295,7 @@ namespace MetelStock
                     Console.WriteLine("Login auto start  [" + DateTime.Now.ToString() + "]");
                 }
             }
-            DateTime startDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
-            if (DateTime.Now >= startDt)
-            {
+            if (isRealTime(TEST_MODE)){
                 ost.RequestAutoTrading();
             }
         }
@@ -304,10 +308,19 @@ namespace MetelStock
                 ost.RequestHighTodayVolume(false, "코스닥");
                 Console.WriteLine("Init ItemTimer timer start [" + DateTime.Now.ToString() + "]");
             }
-            ost.RequestHighTodayVolume(false, "코스닥");
+            if (isRealTime(TEST_MODE))
+            {
+                ost.RequestHighTodayVolume(false, "코스닥");
+            }
         }
         //************ end 자동 매매 파트 *******************************************************/
 
-
+        private static bool isRealTime(bool testMode)
+        {
+            if (testMode) return true;
+            DateTime startDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
+            DateTime endDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 15, 30, 0);
+            return DateTime.Now >= startDt && DateTime.Now <= endDt ? true : false;
+        }
     }
 }

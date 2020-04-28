@@ -39,10 +39,10 @@ namespace MetelStockLib.core
         public event EventHandler<OnReceivedStockItemsEventArgs> OnReceivedStockItems; //관심종목 받아올때
         public event EventHandler<EventArgs> OnLoged; // 로그온이후 
         public event EventHandler<OnReceivedAutoTrading3MDataEventArgs> OnReceivedAutoTrading3MData; //차트데이터 수신 시
-        public event EventHandler<OnReceivedATOrderListEventArgs> OnReceivedAutoTradingOrderList;
-        public event EventHandler<OnReceivedATOrderListEventArgs> OnReceivedOutstandingOrderList;
-        public event EventHandler<OnReceivedATOrderEventArgs> OnReceivedAutoTradingOrderAccept;
-        public event EventHandler<OnReceivedATOrderEventArgs> OnReceivedAutoTradingOrderConclusion;
+        public event EventHandler<OnReceivedATOrderListEventArgs> OnReceivedOutstandingOrderList;       //미체결
+        public event EventHandler<OnReceivedATOrderEventArgs> OnReceivedAutoTradingOrderBalance;   //잔고
+        public event EventHandler<OnReceivedATOrderEventArgs> OnReceivedAutoTradingOrderAccept;         //접수
+        public event EventHandler<OnReceivedATOrderEventArgs> OnReceivedAutoTradingOrderConclusion;     //체결
 
         private static int screenNum = 5000;
         private const string ChartMinuteType = "3:3분";
@@ -134,7 +134,7 @@ namespace MetelStockLib.core
             axKHOpenAPI.OnReceiveTrData += AxKHOpenAPI_OnReceiveTrData;
             axKHOpenAPI.OnReceiveChejanData += AxKHOpenAPI_OnReceiveChejanData;
             //추가 
-            // axKHOpenAPI.OnReceiveRealData += AxKHOpenAPI_OnReceiveRealData;
+            axKHOpenAPI.OnReceiveRealData += AxKHOpenAPI_OnReceiveRealData;
         }
 
         public void Start()
@@ -299,13 +299,15 @@ namespace MetelStockLib.core
                 List<ATOrder> orderList = dbm.getMstForOrder(getYmd(), itemCode);
                 for (int i = 0; i < orderList.Count; i++)
                 {
-                    string 거래구분 = "03"; // 00: 지정가 03:시장가
+                    string 거래구분 = "00"; // 00: 지정가 03:시장가
                     ATOrder order = orderList[i];
                     order.계좌 = userInfo.Accounts[0];
-                    double dd = 100000 / order.주문가격;
-                    int 주문수량 = (int)Math.Truncate(dd);
+                    //double dd = 100000 / order.주문가격;
+                    //int 주문수량 = (int)Math.Truncate(dd);
+                    int 주문수량 = 1;
                     int mmtype = order.매매구분.Equals("B") ? 1 : 2;
-                    int result = axKHOpenAPI.SendOrder(RqName.주식주문, GetScreenNum(), order.계좌, mmtype, itemCode, 주문수량, order.주문가격, 거래구분, "");
+                    int 주문가격 = order.매매구분.Equals("B") ? order.주문가격+100: order.주문가격;
+                    int result = axKHOpenAPI.SendOrder(RqName.주식주문, GetScreenNum(), order.계좌, mmtype, itemCode, 주문수량, 주문가격, 거래구분, "");
                     if(result == 0)
                     {
                         dbm.updateMstForOrder(order);
@@ -573,25 +575,42 @@ namespace MetelStockLib.core
             if (e.sGubun.Equals("0")) //접수 or 체결
             {
                 string chejanGubun = axKHOpenAPI.GetChejanData(913).Trim();     //주문내역인지 체결내역인지 가져옴
-                string 종목코드 = axKHOpenAPI.GetChejanData(9001).Trim();
-                string 종목명 = axKHOpenAPI.GetMasterCodeName(종목코드);
+                string 계좌번호 = axKHOpenAPI.GetChejanData(9201).Trim();
                 string 주문번호 = axKHOpenAPI.GetChejanData(9203).Trim();
-                int 주문수량 = int.Parse(axKHOpenAPI.GetChejanData(900));
-                int 미체결수량 = int.Parse(axKHOpenAPI.GetChejanData(902));
-                string 체결량 = axKHOpenAPI.GetChejanData(911).Trim();
+                string 종목코드 = axKHOpenAPI.GetChejanData(9001).Trim();
+                string 종목명 = axKHOpenAPI.GetChejanData(302).Trim();         
+                int 주문수량 = parseInt(axKHOpenAPI.GetChejanData(900));
+                int 주문가격 = parseInt(axKHOpenAPI.GetChejanData(901));
+                int 미체결수량 = parseInt(axKHOpenAPI.GetChejanData(902));
+                string 주문구분 = axKHOpenAPI.GetChejanData(905);
+                string 거래구분 = axKHOpenAPI.GetChejanData(906);
+                string 주문체결시간 = axKHOpenAPI.GetChejanData(908).Trim();
+
+                int 체결가 = parseInt(axKHOpenAPI.GetChejanData(910));
+                int 체결량 = parseInt(axKHOpenAPI.GetChejanData(911));
+                int 현재가 = parseInt(axKHOpenAPI.GetChejanData(10));
+                int 단위체결량 = parseInt(axKHOpenAPI.GetChejanData(915));
+
+
                 // 추가
                 string 매매구분 = axKHOpenAPI.GetChejanData(907).Trim();
                 string 원주문번호 = axKHOpenAPI.GetChejanData(904).Trim();
-                string 주문체결시간 = axKHOpenAPI.GetChejanData(908).Trim();
-                int 주문가격 = int.Parse(axKHOpenAPI.GetChejanData(901));
 
                 ATOrder order = new ATOrder();
+                order.계좌번호 = 계좌번호;
+                order.주문번호 = 주문번호;
                 order.종목코드 = 종목코드;
                 order.종목명 = 종목명;
-                order.주문번호 = 주문번호;
-                order.주문가격 = 주문가격;
                 order.주문수량 = 주문수량;
+                order.주문가격 = 주문가격;
                 order.미체결수량 = 미체결수량;
+                order.주문구분 = 주문구분;
+                order.거래구분 = 거래구분;
+                order.체결가 = 체결가;
+                order.체결량 = 체결량;
+                order.단위체결량 = 단위체결량;
+                order.현재가 = 현재가;
+                
                 order.매매구분 = 매매구분;
                 order.원주문번호 = 원주문번호;
                 order.시간 = 주문체결시간;
@@ -611,8 +630,45 @@ namespace MetelStockLib.core
             }
             else if (e.sGubun.Equals("1")) //잔고전달
             {
+                string account = axKHOpenAPI.GetChejanData(9201);    // 계좌번호
+                string itemCode = axKHOpenAPI.GetChejanData(9001);    // 종목코드
+                string itemName = axKHOpenAPI.GetChejanData(302).Trim();    // 종목명
+                string balanceQty = axKHOpenAPI.GetChejanData(930);    // 보유수량
+                string buyingPrice = axKHOpenAPI.GetChejanData(931);    // 매입단가
+                string totalBuyingPrice = axKHOpenAPI.GetChejanData(932);    // 총매입가
+                string orderAvailableQty = axKHOpenAPI.GetChejanData(933);    // 주문가능수량
+                string tradingType = axKHOpenAPI.GetChejanData(946);    // 매수매도구분
+                string prifitRate = axKHOpenAPI.GetChejanData(8019);    // 손익률
+                
+                ATOrder order = new ATOrder();
+                order.계좌번호 = account;
+                order.종목코드 = itemCode;
+                order.종목명 = itemName;
+                order.보유수량 = parseInt(balanceQty);
+                order.매입단가 = parseInt(buyingPrice);
+                order.총매입가 = parseInt(totalBuyingPrice);
+                order.주문가능수량 = parseInt(orderAvailableQty);
+                order.거래구분 = tradingType;
+                order.손익률 = parseDouble(prifitRate);
 
+                OnReceivedAutoTradingOrderBalance?.Invoke(this, new OnReceivedATOrderEventArgs(order));
             }
+        }
+
+        public bool RequestOrder(string rqName, string account, MMType mType, string itemCode, int qty, int price, PriceType priceType)
+        {
+            string _priceType = priceType.ToString().Length == 1 ? "0" + priceType.ToString() : priceType.ToString();
+            int orderResult = axKHOpenAPI.SendOrder(rqName
+                                            , GetScreenNum()
+                                            , account
+                                            , (int) mType
+                                            , itemCode
+                                            , qty
+                                            , price
+                                            , _priceType      //지정가
+                                            , ""
+                                            );
+            return orderResult == 0 ? true : false;
         }
 
         private void AxKHOpenAPI_OnReceiveRealData(object sender, _DKHOpenAPIEvents_OnReceiveRealDataEvent e)
@@ -894,12 +950,12 @@ namespace MetelStockLib.core
 
                 if (result == ErrorCode.정상처리)
                 {
-                    Console.WriteLine($"{rqName} 성공");
+                    Console.WriteLine($"{rqName} 성공" + DateTime.Now.ToString());
                     // dbm.insertActH(rqName, STrCode, sScreenNo, "RequestHighTodayVolume", "");
                 }
                 else
                 {
-                    Console.WriteLine($"{rqName} 실패");
+                    Console.WriteLine($"{rqName} 실패" + DateTime.Now.ToString());
                 }
             });
 
@@ -1095,6 +1151,15 @@ namespace MetelStockLib.core
             OnReceivedLogMessage?.Invoke(this, new OnReceivedLogMessageEventArgs(logMessage));
         }
 
+        private int parseInt(string val)
+        {
+            return (val == null || val.Length == 0) ? 0 : int.Parse(val);
+        }
+        private double parseDouble(string val)
+        {
+            return (val == null || val.Length == 0) ? 0 : double.Parse(val);
+        }
+
         public static string GetScreenNum()
         {
             if (screenNum >= 9999)
@@ -1110,5 +1175,6 @@ namespace MetelStockLib.core
             else
                 return false;
         }
+
     }
 }

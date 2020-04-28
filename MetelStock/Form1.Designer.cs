@@ -33,12 +33,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.메뉴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.로그인ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,6 +99,7 @@
             this.txtSearchItemCode = new System.Windows.Forms.TextBox();
             this.tpAT = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.dgMfAtMst = new System.Windows.Forms.DataGridView();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tableLayoutAtItem = new System.Windows.Forms.TableLayoutPanel();
             this.dgAtItem = new System.Windows.Forms.DataGridView();
@@ -113,12 +111,9 @@
             this.btnAtItemSearch = new System.Windows.Forms.Button();
             this.txtAtItemName = new System.Windows.Forms.TextBox();
             this.axKHOpenAPI1 = new AxKHOpenAPILib.AxKHOpenAPI();
-            this.dgMfAtMst = new System.Windows.Forms.DataGridView();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.dg미체결현황 = new System.Windows.Forms.DataGridView();
-            this.dg실시간접수 = new System.Windows.Forms.DataGridView();
-            this.dg실시간체결 = new System.Windows.Forms.DataGridView();
+            this.tbl실시간하단 = new System.Windows.Forms.TableLayoutPanel();
             this.metFinChart1 = new MetelStockLib.controls.MetFinChart();
+            this.metKOrderGrid1 = new MetelStockLib.controls.MetKOrderGrid();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tpMA.SuspendLayout();
@@ -142,21 +137,17 @@
             this.panel2.SuspendLayout();
             this.tpAT.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgMfAtMst)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.tableLayoutAtItem.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtItem)).BeginInit();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axKHOpenAPI1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgMfAtMst)).BeginInit();
-            this.tableLayoutPanel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dg미체결현황)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dg실시간접수)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dg실시간체결)).BeginInit();
+            this.tbl실시간하단.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.메뉴ToolStripMenuItem,
@@ -172,7 +163,7 @@
             this.메뉴ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.로그인ToolStripMenuItem});
             this.메뉴ToolStripMenuItem.Name = "메뉴ToolStripMenuItem";
-            this.메뉴ToolStripMenuItem.Size = new System.Drawing.Size(83, 44);
+            this.메뉴ToolStripMenuItem.Size = new System.Drawing.Size(83, 40);
             this.메뉴ToolStripMenuItem.Text = "메뉴";
             // 
             // 로그인ToolStripMenuItem
@@ -186,7 +177,7 @@
             this.로그아웃ToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.로그아웃ToolStripMenuItem2});
             this.로그아웃ToolStripMenuItem1.Name = "로그아웃ToolStripMenuItem1";
-            this.로그아웃ToolStripMenuItem1.Size = new System.Drawing.Size(131, 44);
+            this.로그아웃ToolStripMenuItem1.Size = new System.Drawing.Size(131, 40);
             this.로그아웃ToolStripMenuItem1.Text = "로그아웃";
             // 
             // 로그아웃ToolStripMenuItem2
@@ -270,7 +261,7 @@
             this.tpStrategyBuy.Location = new System.Drawing.Point(8, 39);
             this.tpStrategyBuy.Name = "tpStrategyBuy";
             this.tpStrategyBuy.Padding = new System.Windows.Forms.Padding(3);
-            this.tpStrategyBuy.Size = new System.Drawing.Size(831, 619);
+            this.tpStrategyBuy.Size = new System.Drawing.Size(831, 611);
             this.tpStrategyBuy.TabIndex = 1;
             this.tpStrategyBuy.Text = "매수전략";
             this.tpStrategyBuy.UseVisualStyleBackColor = true;
@@ -279,7 +270,7 @@
             // 
             this.tpStrategySell.Location = new System.Drawing.Point(8, 39);
             this.tpStrategySell.Name = "tpStrategySell";
-            this.tpStrategySell.Size = new System.Drawing.Size(831, 619);
+            this.tpStrategySell.Size = new System.Drawing.Size(831, 611);
             this.tpStrategySell.TabIndex = 2;
             this.tpStrategySell.Text = "매도전략";
             this.tpStrategySell.UseVisualStyleBackColor = true;
@@ -824,7 +815,7 @@
             // 
             // tpAT
             // 
-            this.tpAT.Controls.Add(this.tableLayoutPanel4);
+            this.tpAT.Controls.Add(this.tbl실시간하단);
             this.tpAT.Controls.Add(this.tableLayoutPanel3);
             this.tpAT.Controls.Add(this.groupBox3);
             this.tpAT.Location = new System.Drawing.Point(8, 39);
@@ -849,6 +840,24 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(1543, 745);
             this.tableLayoutPanel3.TabIndex = 1;
+            // 
+            // dgMfAtMst
+            // 
+            this.dgMfAtMst.AllowUserToAddRows = false;
+            this.dgMfAtMst.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.Ivory;
+            this.dgMfAtMst.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            this.dgMfAtMst.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgMfAtMst.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgMfAtMst.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgMfAtMst.Location = new System.Drawing.Point(3, 3);
+            this.dgMfAtMst.Name = "dgMfAtMst";
+            this.dgMfAtMst.RowHeadersVisible = false;
+            this.dgMfAtMst.RowHeadersWidth = 82;
+            this.dgMfAtMst.RowTemplate.Height = 30;
+            this.dgMfAtMst.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgMfAtMst.Size = new System.Drawing.Size(1537, 739);
+            this.dgMfAtMst.TabIndex = 2;
             // 
             // groupBox3
             // 
@@ -879,8 +888,8 @@
             // 
             this.dgAtItem.AllowUserToAddRows = false;
             this.dgAtItem.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle10.BackColor = System.Drawing.Color.Ivory;
-            this.dgAtItem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Ivory;
+            this.dgAtItem.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
             this.dgAtItem.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgAtItem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgAtItem.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -990,96 +999,21 @@
             this.axKHOpenAPI1.TabIndex = 0;
             this.axKHOpenAPI1.Visible = false;
             // 
-            // dgMfAtMst
+            // tbl실시간하단
             // 
-            this.dgMfAtMst.AllowUserToAddRows = false;
-            this.dgMfAtMst.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle9.BackColor = System.Drawing.Color.Ivory;
-            this.dgMfAtMst.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle9;
-            this.dgMfAtMst.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgMfAtMst.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgMfAtMst.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgMfAtMst.Location = new System.Drawing.Point(3, 3);
-            this.dgMfAtMst.Name = "dgMfAtMst";
-            this.dgMfAtMst.RowHeadersVisible = false;
-            this.dgMfAtMst.RowHeadersWidth = 82;
-            this.dgMfAtMst.RowTemplate.Height = 30;
-            this.dgMfAtMst.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgMfAtMst.Size = new System.Drawing.Size(1537, 739);
-            this.dgMfAtMst.TabIndex = 2;
-            // 
-            // tableLayoutPanel4
-            // 
-            this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbl실시간하단.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel4.ColumnCount = 3;
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel4.Controls.Add(this.dg실시간체결, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.dg실시간접수, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.dg미체결현황, 0, 0);
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(21, 811);
-            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 1;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(2345, 684);
-            this.tableLayoutPanel4.TabIndex = 2;
-            // 
-            // dg미체결현황
-            // 
-            this.dg미체결현황.AllowUserToAddRows = false;
-            this.dg미체결현황.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.Ivory;
-            this.dg미체결현황.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle8;
-            this.dg미체결현황.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dg미체결현황.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dg미체결현황.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dg미체결현황.Location = new System.Drawing.Point(3, 3);
-            this.dg미체결현황.Name = "dg미체결현황";
-            this.dg미체결현황.RowHeadersVisible = false;
-            this.dg미체결현황.RowHeadersWidth = 82;
-            this.dg미체결현황.RowTemplate.Height = 30;
-            this.dg미체결현황.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dg미체결현황.Size = new System.Drawing.Size(775, 678);
-            this.dg미체결현황.TabIndex = 2;
-            // 
-            // dg실시간접수
-            // 
-            this.dg실시간접수.AllowUserToAddRows = false;
-            this.dg실시간접수.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Ivory;
-            this.dg실시간접수.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
-            this.dg실시간접수.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dg실시간접수.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dg실시간접수.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dg실시간접수.Location = new System.Drawing.Point(784, 3);
-            this.dg실시간접수.Name = "dg실시간접수";
-            this.dg실시간접수.RowHeadersVisible = false;
-            this.dg실시간접수.RowHeadersWidth = 82;
-            this.dg실시간접수.RowTemplate.Height = 30;
-            this.dg실시간접수.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dg실시간접수.Size = new System.Drawing.Size(775, 678);
-            this.dg실시간접수.TabIndex = 3;
-            // 
-            // dg실시간체결
-            // 
-            this.dg실시간체결.AllowUserToAddRows = false;
-            this.dg실시간체결.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.Ivory;
-            this.dg실시간체결.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
-            this.dg실시간체결.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dg실시간체결.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dg실시간체결.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dg실시간체결.Location = new System.Drawing.Point(1565, 3);
-            this.dg실시간체결.Name = "dg실시간체결";
-            this.dg실시간체결.RowHeadersVisible = false;
-            this.dg실시간체결.RowHeadersWidth = 82;
-            this.dg실시간체결.RowTemplate.Height = 30;
-            this.dg실시간체결.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dg실시간체결.Size = new System.Drawing.Size(777, 678);
-            this.dg실시간체결.TabIndex = 4;
+            this.tbl실시간하단.ColumnCount = 3;
+            this.tbl실시간하단.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 800F));
+            this.tbl실시간하단.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tbl실시간하단.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tbl실시간하단.Controls.Add(this.metKOrderGrid1, 2, 0);
+            this.tbl실시간하단.Location = new System.Drawing.Point(21, 813);
+            this.tbl실시간하단.Name = "tbl실시간하단";
+            this.tbl실시간하단.RowCount = 1;
+            this.tbl실시간하단.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tbl실시간하단.Size = new System.Drawing.Size(2348, 683);
+            this.tbl실시간하단.TabIndex = 2;
             // 
             // metFinChart1
             // 
@@ -1093,6 +1027,14 @@
             this.metFinChart1.TabIndex = 2;
             this.metFinChart1.TickType = "3:3분";
             this.metFinChart1.Ymd = "";
+            // 
+            // metKOrderGrid1
+            // 
+            this.metKOrderGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.metKOrderGrid1.Location = new System.Drawing.Point(833, 3);
+            this.metKOrderGrid1.Name = "metKOrderGrid1";
+            this.metKOrderGrid1.Size = new System.Drawing.Size(1512, 677);
+            this.metKOrderGrid1.TabIndex = 0;
             // 
             // Form1
             // 
@@ -1131,17 +1073,14 @@
             this.panel2.PerformLayout();
             this.tpAT.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgMfAtMst)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.tableLayoutAtItem.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgAtItem)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axKHOpenAPI1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgMfAtMst)).EndInit();
-            this.tableLayoutPanel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dg미체결현황)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dg실시간접수)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dg실시간체결)).EndInit();
+            this.tbl실시간하단.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1224,11 +1163,9 @@
         private System.Windows.Forms.ComboBox cbAt관심종목;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Button btnAtRealStart;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.DataGridView dg실시간체결;
-        private System.Windows.Forms.DataGridView dg실시간접수;
-        private System.Windows.Forms.DataGridView dg미체결현황;
         private System.Windows.Forms.DataGridView dgMfAtMst;
+        private System.Windows.Forms.TableLayoutPanel tbl실시간하단;
+        private MetelStockLib.controls.MetKOrderGrid metKOrderGrid1;
     }
 }
 
