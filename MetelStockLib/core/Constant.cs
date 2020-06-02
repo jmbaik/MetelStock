@@ -22,6 +22,7 @@ namespace MetelStockLib.core
         public const string 주식주문 = "주식주문";
         public const string 실시간미체결요청 = "실시간미체결요청";
 
+
     }
 
     public static class ErrorCode
