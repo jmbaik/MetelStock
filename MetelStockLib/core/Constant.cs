@@ -21,8 +21,25 @@ namespace MetelStockLib.core
         public const string 자동매매거래대금상위요청 = "자동매매거래대금상위요청";  //opt10032
         public const string 주식주문 = "주식주문";
         public const string 실시간미체결요청 = "실시간미체결요청";
+        public const string 실시간등록 = "실시간등록";
+    }
 
-
+    public static class ScreenNo 
+    {
+        public const string 주식기본정보요청 = "5001";
+        public const string 주식틱차트조회요청 = "5002";
+        public const string 주식일봉차트조회요청 = "5003";
+        public const string 주식분봉차트조회요청 = "5004";
+        public const string 계좌평가현황요청 = "5005";
+        public const string 당일거래량상위요청 = "5006";
+        public const string 자동매매당일거래상위요청 = "5007";
+        public const string 전일거래량상위요청 = "5008";
+        public const string 자동매매분봉차트요청 = "5009";
+        public const string 거래대금상위요청 = "5010";
+        public const string 자동매매거래대금상위요청 = "5011";
+        public const string 주식주문 = "6001";
+        public const string 실시간미체결요청 = "6002";
+        public const string 실시간등록 = "6003";
     }
 
     public static class ErrorCode

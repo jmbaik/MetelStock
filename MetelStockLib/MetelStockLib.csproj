@@ -45,11 +45,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="controls\MetATItemGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="controls\MetATItemGrid.Designer.cs">
+      <DependentUpon>MetATItemGrid.cs</DependentUpon>
+    </Compile>
     <Compile Include="controls\MetFinChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="controls\MetFinChart.Designer.cs">
       <DependentUpon>MetFinChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="controls\MetKMMGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="controls\MetKMMGrid.Designer.cs">
+      <DependentUpon>MetKMMGrid.cs</DependentUpon>
     </Compile>
     <Compile Include="controls\MetKOrderGrid.cs">
       <SubType>UserControl</SubType>
@@ -57,6 +69,13 @@
     <Compile Include="controls\MetKOrderGrid.Designer.cs">
       <DependentUpon>MetKOrderGrid.cs</DependentUpon>
     </Compile>
+    <Compile Include="controls\MetSignalMstGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="controls\MetSignalMstGrid.Designer.cs">
+      <DependentUpon>MetSignalMstGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\Common.cs" />
     <Compile Include="core\Constant.cs" />
     <Compile Include="core\EntityClass.cs" />
     <Compile Include="core\EventArgs.cs" />
@@ -86,11 +105,20 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="controls\MetATItemGrid.resx">
+      <DependentUpon>MetATItemGrid.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="controls\MetFinChart.resx">
       <DependentUpon>MetFinChart.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="controls\MetKMMGrid.resx">
+      <DependentUpon>MetKMMGrid.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="controls\MetKOrderGrid.resx">
       <DependentUpon>MetKOrderGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="controls\MetSignalMstGrid.resx">
+      <DependentUpon>MetSignalMstGrid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

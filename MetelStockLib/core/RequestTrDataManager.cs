@@ -58,5 +58,16 @@ namespace MetelStockLib.core
         {
             requestTaskQueue.Enqueue(task);
         }
+
+        public void RequestTrDataOnFirst(Task task) //Task 형식으로 TR Data Request를 전달받는다.
+        {
+            Queue<Task> tempQueue = requestTaskQueue;
+            requestTaskQueue.Clear();
+            requestTaskQueue.Enqueue(task);
+            foreach (Task _task in tempQueue)
+            {
+                requestTaskQueue.Enqueue(_task);
+            }
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace MetelStockLib.core
 
         public UserInfo userInfo;
         public List<Group> groupList = new List<Group>(); //관심 그룹 리스트
+        public List<RealOrder> realOrderList = new List<RealOrder>();
         // 추가
         private DBManager dbm = new DBManager();
 
@@ -43,11 +44,15 @@ namespace MetelStockLib.core
         public event EventHandler<OnReceivedATOrderEventArgs> OnReceivedAutoTradingOrderBalance;   //잔고
         public event EventHandler<OnReceivedATOrderEventArgs> OnReceivedAutoTradingOrderAccept;         //접수
         public event EventHandler<OnReceivedATOrderEventArgs> OnReceivedAutoTradingOrderConclusion;     //체결
+        public event EventHandler<OnReceiveSignalMstEventArgs> OnReceiveSignalMst;
+        public event EventHandler<OnReceiveConditionVerEventArgs> OnReceiveConditionVer;
+        public event EventHandler<OnReceiveConditionItemListEventArgs> OnReceiveTrCondition;
+        public event EventHandler<OnReceiveConditionItemEventArgs> OnReceiveRealCondition;
 
-        private static int screenNum = 5000;
         private const string ChartMinuteType = "3:3분";
         private static string[] NotWorkingDays = new string[]{"20200415","20200430","20200501","20200505","20200930","20201001"
                             ,"20200102","20201003","20201009","20201225","20201231"};
+        public bool IsRealCondition = false;
 
         public static string getYmd()
         {
@@ -134,7 +139,10 @@ namespace MetelStockLib.core
             axKHOpenAPI.OnReceiveTrData += AxKHOpenAPI_OnReceiveTrData;
             axKHOpenAPI.OnReceiveChejanData += AxKHOpenAPI_OnReceiveChejanData;
             //추가 
-            axKHOpenAPI.OnReceiveRealData += AxKHOpenAPI_OnReceiveRealData;
+            // axKHOpenAPI.OnReceiveRealData += AxKHOpenAPI_OnReceiveRealData;
+            axKHOpenAPI.OnReceiveConditionVer += AxKHOpenAPI_OnReceiveConditionVer;
+            axKHOpenAPI.OnReceiveTrCondition += AxKHOpenAPI_OnReceiveTrCondition;
+            axKHOpenAPI.OnReceiveRealCondition += AxKHOpenAPI_OnReceiveRealCondition;
         }
 
         public void Start()
@@ -266,6 +274,7 @@ namespace MetelStockLib.core
                 //string itemName = axKHOpenAPI.GetMasterCodeName(itemCode);
                 string itemName = "";
                 int cnt = axKHOpenAPI.GetRepeatCnt(e.sTrCode, e.sRQName);
+                string _ymd = getYmd();
 
                 List<ChartData> chartDataList = new List<ChartData>();
                 for (int i = 0; i < cnt; i++)
@@ -291,23 +300,29 @@ namespace MetelStockLib.core
                 if (e.sPrevNext.Equals("2")) //추가데이터가 존재할 경우
                     hasNext = true;
 
-                OnReceivedAutoTrading3MData?.Invoke(this, new OnReceivedAutoTrading3MDataEventArgs(itemCode, itemName, chartDataList, hasNext));
                 // dbms 분종 데이터 넣기
                 dbm.mergeMfAt3M(itemCode, chartDataList);
                 // 자동매매 오더 
                 Thread.Sleep(300);
-                List<ATOrder> orderList = dbm.getMstForOrder(getYmd(), itemCode);
+                List<ATOrder> orderList = dbm.getMstForOrder(_ymd, itemCode);
                 for (int i = 0; i < orderList.Count; i++)
                 {
-                    string 거래구분 = "00"; // 00: 지정가 03:시장가
                     ATOrder order = orderList[i];
                     order.계좌 = userInfo.Accounts[0];
-                    //double dd = 100000 / order.주문가격;
-                    //int 주문수량 = (int)Math.Truncate(dd);
-                    int 주문수량 = 1;
+                    decimal dd = 1000000 / order.주문가격;
+                    int 주문수량 =(int)Math.Truncate(dd);
                     int mmtype = order.매매구분.Equals("B") ? 1 : 2;
-                    int 주문가격 = order.매매구분.Equals("B") ? order.주문가격+100: order.주문가격;
-                    int result = axKHOpenAPI.SendOrder(RqName.주식주문, GetScreenNum(), order.계좌, mmtype, itemCode, 주문수량, 주문가격, 거래구분, "");
+                    //int 주문가격 = order.매매구분.Equals("B") ? order.주문가격+100: order.주문가격;
+                    MMType _mm_type = order.매매구분.Equals("B") ? MMType.신규매수 : MMType.신규매도;
+                    // RequestOrder(order.계좌, _mm_type, itemCode, 주문수량, 주문가격, PriceType.지정가);
+                    // dbm.updateMstForOrder(order);
+                    RealOrder realOrder = new RealOrder(order.계좌, order.종목코드, order.종목명, order.매매구분, order.주문가격, 주문수량, PriceType.지정가);
+                    realOrderList.Add(realOrder);
+                    setRealRegAppend(itemCode);
+                    Console.WriteLine($"분봉차트조회 실시간등록 {itemCode}|매매구분:{order.매매구분}|주문가격:{order.주문가격}|주문수량:{주문수량}");
+                    OnReceiveSignalMst?.Invoke(this, new OnReceiveSignalMstEventArgs(_ymd, itemCode));                    
+                    /*
+                    int result = axKHOpenAPI.SendOrder(RqName.주식주문, ScreenNo.주식주문, order.계좌, mmtype, itemCode, 주문수량, 주문가격, 거래구분, "");
                     if(result == 0)
                     {
                         dbm.updateMstForOrder(order);
@@ -317,6 +332,7 @@ namespace MetelStockLib.core
                     {
                         Console.WriteLine($"주문실패 매매구분:{order.매매구분} 종목:{itemName}[{itemCode}]| 가격:{order.주문가격} | 수량:{order.주문수량} [{DateTime.Now.ToString()}]");
                     }
+                    */
                 }
 
                 Console.WriteLine($"[응답]자동분봉차트요청 mergeMfAt3M작업완료 {itemName}[{itemCode}] [" + DateTime.Now.ToString() +"]");
@@ -579,18 +595,17 @@ namespace MetelStockLib.core
                 string 주문번호 = axKHOpenAPI.GetChejanData(9203).Trim();
                 string 종목코드 = axKHOpenAPI.GetChejanData(9001).Trim();
                 string 종목명 = axKHOpenAPI.GetChejanData(302).Trim();         
-                int 주문수량 = parseInt(axKHOpenAPI.GetChejanData(900));
-                int 주문가격 = parseInt(axKHOpenAPI.GetChejanData(901));
-                int 미체결수량 = parseInt(axKHOpenAPI.GetChejanData(902));
+                int 주문수량 = Common.parseInt(axKHOpenAPI.GetChejanData(900));
+                int 주문가격 = Common.parseInt(axKHOpenAPI.GetChejanData(901));
+                int 미체결수량 = Common.parseInt(axKHOpenAPI.GetChejanData(902));
                 string 주문구분 = axKHOpenAPI.GetChejanData(905);
                 string 거래구분 = axKHOpenAPI.GetChejanData(906);
                 string 주문체결시간 = axKHOpenAPI.GetChejanData(908).Trim();
 
-                int 체결가 = parseInt(axKHOpenAPI.GetChejanData(910));
-                int 체결량 = parseInt(axKHOpenAPI.GetChejanData(911));
-                int 현재가 = parseInt(axKHOpenAPI.GetChejanData(10));
-                int 단위체결량 = parseInt(axKHOpenAPI.GetChejanData(915));
-
+                int 체결가 = Common.parseInt(axKHOpenAPI.GetChejanData(910));
+                int 체결량 = Common.parseInt(axKHOpenAPI.GetChejanData(911));
+                int 현재가 = Common.parseInt(axKHOpenAPI.GetChejanData(10));
+                int 단위체결량 = Common.parseInt(axKHOpenAPI.GetChejanData(915));
 
                 // 추가
                 string 매매구분 = axKHOpenAPI.GetChejanData(907).Trim();
@@ -644,24 +659,24 @@ namespace MetelStockLib.core
                 order.계좌번호 = account;
                 order.종목코드 = itemCode;
                 order.종목명 = itemName;
-                order.보유수량 = parseInt(balanceQty);
-                order.매입단가 = parseInt(buyingPrice);
-                order.총매입가 = parseInt(totalBuyingPrice);
-                order.주문가능수량 = parseInt(orderAvailableQty);
+                order.보유수량 = Common.parseInt(balanceQty);
+                order.매입단가 = Common.parseInt(buyingPrice);
+                order.총매입가 = Common.parseInt(totalBuyingPrice);
+                order.주문가능수량 = Common.parseInt(orderAvailableQty);
                 order.거래구분 = tradingType;
-                order.손익률 = parseDouble(prifitRate);
+                order.손익률 = Common.parseDouble(prifitRate);
 
                 OnReceivedAutoTradingOrderBalance?.Invoke(this, new OnReceivedATOrderEventArgs(order));
             }
         }
 
-        public bool RequestOrder(string rqName, string account, MMType mType, string itemCode, int qty, int price, PriceType priceType)
+        public bool SendOrder(string account, MMType mType, string itemCode, int qty, int price, PriceType priceType)
         {
             string _priceType = priceType.ToString().Length == 1 ? "0" + priceType.ToString() : priceType.ToString();
-            int orderResult = axKHOpenAPI.SendOrder(rqName
-                                            , GetScreenNum()
+            int orderResult = axKHOpenAPI.SendOrder(RqName.주식주문
+                                            , ScreenNo.주식주문
                                             , account
-                                            , (int) mType
+                                            , (int)mType
                                             , itemCode
                                             , qty
                                             , price
@@ -670,12 +685,49 @@ namespace MetelStockLib.core
                                             );
             return orderResult == 0 ? true : false;
         }
+        public bool SendOrder(RealOrder order)
+        {
+            int mType = order.OrderType.Equals("B") ? (int)MMType.신규매수 : (int)MMType.신규매도;
+            string _priceType = order.PriceType.ToString().Length == 1 ? "0" + order.PriceType.ToString() : order.PriceType.ToString();
+            int orderResult = axKHOpenAPI.SendOrder(RqName.주식주문
+                                            , ScreenNo.주식주문
+                                            , order.Account
+                                            , mType
+                                            , order.ItemCode
+                                            , order.Qty
+                                            , order.Price
+                                            , _priceType      //지정가
+                                            , ""
+                                            );
+            return orderResult == 0 ? true : false;
+        }
+
+        public void RequestOrder(string account, MMType mType, string itemCode, int qty, int price, PriceType priceType)
+        {
+            Task requestTask = new Task(() =>
+            {
+                string _priceType = priceType.ToString().Length == 1 ? "0" + priceType.ToString() : priceType.ToString();
+                axKHOpenAPI.SendOrder(RqName.주식주문
+                                                , ScreenNo.주식주문
+                                                , account
+                                                , (int)mType
+                                                , itemCode
+                                                , qty
+                                                , price
+                                                , _priceType      //지정가
+                                                , ""
+                                                );
+            });
+
+            requestTrDataManager.RequestTrDataOnFirst(requestTask);            
+        }
 
         private void AxKHOpenAPI_OnReceiveRealData(object sender, _DKHOpenAPIEvents_OnReceiveRealDataEvent e)
         {
             if (e.sRealType.Equals("주식체결"))
             {
                 // "20;10;11;12;13;14;15;16;17;18;25;26;27;28;29;30;31;32;228;311;290";
+                /*
                 string item_cd = e.sRealKey;
                 string 체결시간 = axKHOpenAPI.GetCommRealData(item_cd, 20); //체결시간
                 string 현재가 = axKHOpenAPI.GetCommRealData(item_cd, 10); //현재가
@@ -723,12 +775,42 @@ namespace MetelStockLib.core
                 str += "거래회전율 : " + 거래회전율;
                 str += "거래비용 : " + 거래비용;
                 str += "시가총액 : " + 시가총액;
-                string ymdhm = DateTime.Now.ToString("yyyyMMdd") + 체결시간;
+                */
+                string itemCode = e.sRealKey.Trim();
+                string price = axKHOpenAPI.GetCommRealData(itemCode, 10);
+                string lowPrice = axKHOpenAPI.GetCommRealData(itemCode, 18);
+                string openPrice = axKHOpenAPI.GetCommRealData(itemCode, 16);
+                string highPrice = axKHOpenAPI.GetCommRealData(itemCode, 17);
+
+                foreach (RealOrder order in realOrderList)
+                {
+                    if(itemCode.Equals(order.ItemCode))
+                    {
+                        order.PriceType = PriceType.시장가;
+                        // order.Price = 0;
+                        // SendOrder(order);
+                        Console.WriteLine($"실시간 감시: 종목코드:{itemCode} | order.Price:{order.Price} | 현재가:{price} [{DateTime.Now.ToString()}]");
+                    }
+                }
+                //string ymdhm = DateTime.Now.ToString("yyyyMMdd") + 체결시간;
+                /*
                 ChartData chart = new ChartData(Math.Abs(double.Parse(고가)), Math.Abs(double.Parse(저가)), Math.Abs(double.Parse(시가))
                     , Math.Abs(double.Parse(현재가)), Math.Abs(long.Parse(거래량)), ymdhm);
-                dbm.mergeMfBunPrc(item_cd, "noname", chart);
-                SendLogMessage(str);
+                    */
+                // dbm.mergeMfBunPrc(item_cd, "noname", chart);
+                // SendLogMessage(str);
             }
+        }
+
+        private void setRealRegNew(string itemCodes)
+        {
+            string fids = "9001;302;10;11;25;12;13";
+            axKHOpenAPI.SetRealReg(ScreenNo.실시간등록, itemCodes, fids, "0");
+        }
+        private void setRealRegAppend(string itemCodes)
+        {
+            string fids = "9001;302;10;11;25;12;13";
+            axKHOpenAPI.SetRealReg(ScreenNo.실시간등록, itemCodes, fids, "1");
         }
 
         public void RequestRealReg()
@@ -738,7 +820,7 @@ namespace MetelStockLib.core
                 // realReg
                 string itemCodes = "086280;064960;028050;020150;012450;011070;005380;000990;000270;009540;267250";
                 string fids = "20;10;11;12;13;14;15;16;17;18;25;26;27;28;29;30;31;32;228;311;290";
-                axKHOpenAPI.SetRealReg(GetScreenNum(), itemCodes, fids, "0");
+                axKHOpenAPI.SetRealReg(ScreenNo.실시간등록, itemCodes, fids, "0");
 
                 //실시간 해지 
                 //axKHOpenAPI.SetRealRemove("ALL", "ALL");
@@ -758,7 +840,7 @@ namespace MetelStockLib.core
             Task requestItemInfoTask = new Task(() =>
             {
                 axKHOpenAPI.SetInputValue("종목코드", itemCode);
-                string srcNo = GetScreenNum();
+                string srcNo = ScreenNo.주식기본정보요청;
                 string trName = "opt10001";
                 int result = axKHOpenAPI.CommRqData(RqName.주식기본정보요청, trName, 0, srcNo);
 
@@ -785,20 +867,19 @@ namespace MetelStockLib.core
                 axKHOpenAPI.SetInputValue("수정주가구분", "0");
                 int result = -1;
                 const string STrCode = "opt10079";
-                string sScreenNo = GetScreenNum();
                 if (isContinue) //연속조회여부 
                 {
-                    result = axKHOpenAPI.CommRqData(RqName.주식틱차트조회요청, STrCode, 2, sScreenNo);
+                    result = axKHOpenAPI.CommRqData(RqName.주식틱차트조회요청, STrCode, 2, ScreenNo.주식틱차트조회요청);
                 }
                 else
                 {
-                    result = axKHOpenAPI.CommRqData(RqName.주식틱차트조회요청, STrCode, 0, sScreenNo);
+                    result = axKHOpenAPI.CommRqData(RqName.주식틱차트조회요청, STrCode, 0, ScreenNo.주식틱차트조회요청);
                 }
 
                 if (result == ErrorCode.정상처리)
                 {
                     Console.WriteLine("주식틱차트조회요청 성공");
-                    dbm.insertActH(RqName.주식틱차트조회요청, STrCode, sScreenNo, "RequestTickChartData", itemCode);
+                    dbm.insertActH(RqName.주식틱차트조회요청, STrCode, ScreenNo.주식틱차트조회요청, "RequestTickChartData", itemCode);
                 }
                 else
                 {
@@ -823,7 +904,7 @@ namespace MetelStockLib.core
                 axKHOpenAPI.SetInputValue("수정주가구분", "0");
 
                 const string STrCode = "opt10081";
-                string sScreenNo = GetScreenNum();
+                string sScreenNo = ScreenNo.주식일봉차트조회요청;
                 int result = axKHOpenAPI.CommRqData(RqName.주식일봉차트조회요청, STrCode, 0, sScreenNo);
 
                 if (result == ErrorCode.정상처리)
@@ -839,6 +920,7 @@ namespace MetelStockLib.core
 
             requestTrDataManager.RequestTrData(requestChartDataTask);
         }
+
         public void RequestMinuteChartData(string itemCode, string tickType, string rqName=RqName.주식분봉차트조회요청)
         {
             Task requestChartDataTask = new Task(() =>
@@ -847,7 +929,7 @@ namespace MetelStockLib.core
                 axKHOpenAPI.SetInputValue("틱범위", tickType);
                 axKHOpenAPI.SetInputValue("수정주가구분", "0");
                 const string STrCode = "opt10080";
-                string sScreenNo = GetScreenNum();
+                string sScreenNo = ScreenNo.주식분봉차트조회요청;
                 int result = axKHOpenAPI.CommRqData(rqName, STrCode, 0, sScreenNo);
 
                 if (result == ErrorCode.정상처리)
@@ -875,7 +957,7 @@ namespace MetelStockLib.core
 
                 const string rqName = RqName.계좌평가현황요청;
                 const string STrCode = "OPW00004";
-                string sScreenNo = GetScreenNum();
+                string sScreenNo = ScreenNo.계좌평가현황요청;
                 int result = axKHOpenAPI.CommRqData(rqName, STrCode, 0, sScreenNo);
 
                 if (result == ErrorCode.정상처리)
@@ -900,7 +982,7 @@ namespace MetelStockLib.core
                 axKHOpenAPI.SetInputValue("계좌번호", userInfo.Accounts[0]);
                 axKHOpenAPI.SetInputValue("체결구분", "1"); //미체결데이터만 요청
                 axKHOpenAPI.SetInputValue("매매구분", "0");  //전체
-                int result = axKHOpenAPI.CommRqData(RqName.실시간미체결요청, "opt10075", 0, GetScreenNum());
+                int result = axKHOpenAPI.CommRqData(RqName.실시간미체결요청, "opt10075", 0, ScreenNo.실시간미체결요청);
 
                 if (result == ErrorCode.정상처리)
                 {
@@ -945,7 +1027,7 @@ namespace MetelStockLib.core
 
                 string rqName = (isAutomatic) ? RqName.자동매매당일거래상위요청 : RqName.당일거래량상위요청;
                 const string STrCode = "opt10030";
-                string sScreenNo = GetScreenNum();
+                string sScreenNo = (isAutomatic) ? ScreenNo.자동매매당일거래상위요청 : ScreenNo.당일거래량상위요청;
                 int result = axKHOpenAPI.CommRqData(rqName, STrCode, 0, sScreenNo);
 
                 if (result == ErrorCode.정상처리)
@@ -986,7 +1068,7 @@ namespace MetelStockLib.core
 
                 string rqName = (isAutomatic) ? RqName.자동매매거래대금상위요청 : RqName.거래대금상위요청;
                 const string STrCode = "opt10032";
-                string sScreenNo = GetScreenNum();
+                string sScreenNo = (isAutomatic) ? ScreenNo.자동매매거래대금상위요청 : ScreenNo.거래대금상위요청;
                 int result = axKHOpenAPI.CommRqData(rqName, STrCode, 0, sScreenNo);
 
                 if (result == ErrorCode.정상처리)
@@ -1029,7 +1111,7 @@ namespace MetelStockLib.core
 
                 const string sRqName = RqName.전일거래량상위요청;
                 const string STrCode = "opt10031";
-                string sScreenNo = GetScreenNum();
+                string sScreenNo = ScreenNo.전일거래량상위요청;
                 int result = axKHOpenAPI.CommRqData(sRqName, STrCode, 0, sScreenNo);
 
                 if (result == ErrorCode.정상처리)
@@ -1048,12 +1130,70 @@ namespace MetelStockLib.core
 
         public void RequestAutoTrading()
         {
+            axKHOpenAPI.SetRealRemove("ALL", "ALL");
             List<StockItem> autoStockList = dbm.getMfAtItem(getYmd());
             foreach (StockItem item in autoStockList)
             {
                 RequestMinuteChartData(item.ItemCode, ChartMinuteType, RqName.자동매매분봉차트요청);
                 Console.WriteLine("자동매매 timer 시작 RequestMinuteChartData ::: " + item.ItemCode + "[" + DateTime.Now.ToString() + "]");
+            }            
+        }
+
+        /*** 조건검색 관련 ***/
+        public void RequestCondition(bool isRealCondition)
+        {
+            IsRealCondition = isRealCondition;
+            Task requestTask = new Task(() =>
+            {
+                int result = axKHOpenAPI.GetConditionLoad();
+                if(result == 1)
+                {
+                    Console.WriteLine("사용자 조건검색 요청 성공");
+                } else
+                {
+                    Console.WriteLine("[Fail] 사용자 조건검색 요청 실패");
+                }
+            });
+            requestTrDataManager.RequestTrData(requestTask);
+        }
+
+        private void AxKHOpenAPI_OnReceiveConditionVer(object sender, _DKHOpenAPIEvents_OnReceiveConditionVerEvent e)
+        {
+            List<Condition> conditionList = new List<Condition>();
+            string conditionNames = axKHOpenAPI.GetConditionNameList();
+            string[] conditionArray = conditionNames.Split(';');
+            foreach (string condition in conditionArray)
+            {
+                if (condition.Length > 0)
+                {
+                    string[] names = condition.Split('^');
+                    Condition ci = new Condition(int.Parse(names[0]), names[1]);
+                    conditionList.Add(ci);
+                }
             }
+            OnReceiveConditionVer?.Invoke(this, new OnReceiveConditionVerEventArgs(conditionList));
+        }
+        private void AxKHOpenAPI_OnReceiveRealCondition(object sender, _DKHOpenAPIEvents_OnReceiveRealConditionEvent e)
+        {
+            Condition condition = new Condition(int.Parse(e.strConditionIndex), e.strConditionName);
+            ConditionItem conditionItem = new ConditionItem(e.sTrCode, e.strType, condition);
+            OnReceiveRealCondition?.Invoke(this, new OnReceiveConditionItemEventArgs(conditionItem));
+        }
+        private void AxKHOpenAPI_OnReceiveTrCondition(object sender, _DKHOpenAPIEvents_OnReceiveTrConditionEvent e)
+        {
+            List<string> itemList = new List<string>();
+            string strCodeList = e.strCodeList;
+            string[] strCodeArray = strCodeList.Split(';');
+            foreach (string itemCode in strCodeArray)
+            {
+                if (itemCode.Length > 0)
+                {
+                    itemList.Add(itemCode);
+                }
+            }
+            Condition condition = new Condition(e.nIndex, e.strConditionName);
+            ConditionItemList ciList = new ConditionItemList(itemList, condition);
+            OnReceiveTrCondition?.Invoke(this, new OnReceiveConditionItemListEventArgs(ciList));
         }
 
         //관심종목 관련
@@ -1144,28 +1284,10 @@ namespace MetelStockLib.core
             }
         }
 
-
         private void SendLogMessage(string logMessage) //Event를 이용해 로그 메세지 전달
         {
             logMessage = DateTime.Now.ToString("[HH:mm:ss] ") + logMessage;
             OnReceivedLogMessage?.Invoke(this, new OnReceivedLogMessageEventArgs(logMessage));
-        }
-
-        private int parseInt(string val)
-        {
-            return (val == null || val.Length == 0) ? 0 : int.Parse(val);
-        }
-        private double parseDouble(string val)
-        {
-            return (val == null || val.Length == 0) ? 0 : double.Parse(val);
-        }
-
-        public static string GetScreenNum()
-        {
-            if (screenNum >= 9999)
-                screenNum = 5000;
-            screenNum++;
-            return screenNum.ToString();
         }
 
         public bool IsLogin()

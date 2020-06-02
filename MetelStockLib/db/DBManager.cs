@@ -560,6 +560,52 @@ namespace MetelStockLib.db
             };
         }
 
+        public DataTable getMfAtMst(string ymd, string itemCode)
+        {
+            DataTable result = null;
+            string whereItemCode = itemCode == null || itemCode.Length == 0 ? "" : $" AND A.ITEM_CD='{itemCode}' ";
+            string query = $@"
+                    SELECT 
+                    A.YMD, SUBSTR(A.YMDHM,9) AS HMS, DECODE(A.MM_TYPE,'B','매수','매도') AS MM_TYPE, A.MM_QTY
+                    , A.PRC, A.S_PRC, A.H_PRC, A.L_PRC
+                    , A.VOL, A.BVOL, A.VOL_BRT, A.MA5, A.MA10, A.MA20, A.MA60, A.MA120, A.DONE, A.RET_MSG, A.REG_DT, A.UPD_DT
+                    FROM MF_AT_MST A , MF_AT_ITEM B 
+                    WHERE A.YMD=B.YMD AND A.ITEM_CD=B.ITEM_CD 
+                    AND A.YMD='{ymd}' {whereItemCode} 
+                    ORDER BY A.ITEM_CD, A.YMDHM, A.MM_SEQ
+                        ";
+            using (OracleConnection connection = new OracleConnection(conn_str))
+            {
+                connection.Open();
+                OracleDataAdapter adapter = new OracleDataAdapter();
+                adapter.SelectCommand = new OracleCommand(query, connection);
+                DataSet ds = new DataSet();
+                adapter.Fill(ds);
+                result = ds.Tables[0];
+            };
+            return result;
+        }
+        public DataTable getTableMfAtItem(string ymd)
+        {
+            DataTable result = null;
+            string query = $@"
+                    SELECT A.ITEM_CD, A.ITEM_NM, 0 AS PRC
+                    FROM MF_AT_ITEM A
+                    WHERE A.YMD='{ymd}'
+                    AND A.REAL_YN='Y' 
+                    ORDER BY A.ITEM_NM
+                    ";
+            using (OracleConnection connection = new OracleConnection(conn_str))
+            {
+                connection.Open();
+                OracleDataAdapter adapter = new OracleDataAdapter();
+                adapter.SelectCommand = new OracleCommand(query, connection);
+                DataSet ds = new DataSet();
+                adapter.Fill(ds);
+                result = ds.Tables[0];
+            };
+            return result;
+        }
 
     }
 }
