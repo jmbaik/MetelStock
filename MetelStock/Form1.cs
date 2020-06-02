@@ -61,6 +61,7 @@ namespace MetelStock
             btnReal.Click += Btn_Click;
             btnAtRealStart.Click += Btn_Click;
             btn미체결현황조회.Click += Btn_Click;
+            btnAtItemSearch.Click += Btn_Click;
 
         }
 
@@ -83,7 +84,7 @@ namespace MetelStock
 
         private void UI_OnReceivedStockItems(object sender, OnReceivedStockItemsEventArgs e)
         {
-            dgAtItem.DataSource = e.StockItemList;
+            
         }
 
         private void UI_OnReceivedItemInfo(object sender, OnReceivedItemInfoEventArgs e)
@@ -144,6 +145,8 @@ namespace MetelStock
                     ost.Start();
                     Console.WriteLine("Login auto start  [" + DateTime.Now.ToString() + "]");
                 }
+                ost.RequestHighTodayVolume(false, "코스닥");
+
                 //실시간 자동매매 시작
                 System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
                 timer.Interval = 3*60*1000;
@@ -158,13 +161,11 @@ namespace MetelStock
                 timer.Start();
                 Console.WriteLine("btnAtrealstart timer start [" + DateTime.Now.ToString() + "]");
                 */
-
-                System.Windows.Forms.Timer itemTimer = new System.Windows.Forms.Timer();
+/*                System.Windows.Forms.Timer itemTimer = new System.Windows.Forms.Timer();
                 itemTimer.Interval = 30 * 60 * 1000;
                 itemTimer.Tick += new EventHandler(ItemTimer_AutoTrading);
                 itemTimer.Start();
-                Console.WriteLine("itemTimer timer start [" + DateTime.Now.ToString() + "]");
-
+                Console.WriteLine("itemTimer timer start [" + DateTime.Now.ToString() + "]");*/
             }
             else if (sender.Equals(btnReal))
             {
@@ -188,6 +189,9 @@ namespace MetelStock
             {
                 // 미체결내역 요청
                 ost.RequestOutstandingOrderList();                
+            } else if (sender.Equals(btnAtItemSearch))
+            {
+                metATItemGrid1.SetGrid();
             }
 
         }
@@ -302,12 +306,13 @@ namespace MetelStock
         private void ItemTimer_AutoTrading(object sender, EventArgs e)
         {
             // 당일거래량상위요청 분봉차트와는 별개로 움직이므로 false로 실행해야 한다.
-            DateTime startDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 1, 0);
-            if(DateTime.Now == startDt)
+            /*            
+            DateTime startDt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 30, 0);
+            if(DateTime.Now <= startDt)
             {
                 ost.RequestHighTodayVolume(false, "코스닥");
                 Console.WriteLine("Init ItemTimer timer start [" + DateTime.Now.ToString() + "]");
-            }
+            }*/
             if (isRealTime(TEST_MODE))
             {
                 ost.RequestHighTodayVolume(false, "코스닥");

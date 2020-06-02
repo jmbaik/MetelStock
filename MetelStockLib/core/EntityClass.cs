@@ -140,6 +140,29 @@ namespace MetelStockLib.core
     }
 
     [Serializable]
+    public class RealOrder
+    {
+        public string Account { get; set; }
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
+        public string OrderType { get; set; }
+        public int Price { get; set; }
+        public int Qty { get; set; }
+        public PriceType PriceType { get; set; }
+
+        public RealOrder(string account, string itemCode, string itemName, string orderType, int price, int qty, PriceType priceType)
+        {
+            Account = account;
+            ItemCode = itemCode;
+            ItemName = itemName;
+            OrderType = orderType;
+            Price = price;
+            Qty = qty;
+            PriceType = priceType;
+        }
+    }
+
+    [Serializable]
     public class ATOrder
     {
         private string itemCode = "";
@@ -176,6 +199,9 @@ namespace MetelStockLib.core
         public string 주문구분 { get; set; }
         public string 거래구분 { get; set; }
         public string 진행상황 { get; set; }
+        public int 매수가 { get; set; }
+        public int 매수금 { get; set; }
+        public int 매수량 { get; set; }
 
         public ATOrder()
         {
@@ -183,7 +209,7 @@ namespace MetelStockLib.core
     }
 
     [Serializable]
-    class StockBalance
+    public class StockBalance
     {
         public string itemCode { get; set; }
         public string itemName { get; set; }
@@ -201,6 +227,44 @@ namespace MetelStockLib.core
             this.CurrentPrice = 현재가;
             this.EstimatedProfit = 평가손익;
             this.ProfitRate = 수익률;
+        }
+    }
+
+    public class Condition {
+        public int ConditionIndex { get; set; }
+        public string ConditionName { get; set; }
+
+        public Condition(int conditionIndex, string conditionName)
+        {
+            ConditionIndex = conditionIndex;
+            ConditionName = conditionName;
+        }
+    }
+
+    [Serializable]
+    public class ConditionItemList
+    {
+        public List<string> ItemList { get; set; }
+        public Condition condition { get; set; }
+        public ConditionItemList(List<string> itemList, Condition condition)
+        {
+            ItemList = itemList;
+            this.condition = condition;
+        }
+    }
+
+    [Serializable]
+    public class ConditionItem
+    {
+        public string ItemCode { get; set; }
+        public string InOutType { get; set; }
+        public Condition condition { get; set; }
+
+        public ConditionItem(string itemCode, string inOutType, Condition condition)
+        {
+            ItemCode = itemCode;
+            InOutType = inOutType;
+            this.condition = condition;
         }
     }
 

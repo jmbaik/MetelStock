@@ -213,4 +213,53 @@ namespace MetelStockLib.core
             this.Message = "자동매매 오더를 가져왔습니다.";
         }
     }
+    public class OnReceiveSignalMstEventArgs : EventArgs
+    {
+        public string YMD { get; set; }
+        public string ItemCode { get; set; }
+        public string Message { get; set; }
+
+        public OnReceiveSignalMstEventArgs(string ymd, string itemCode)
+        {
+            this.YMD = ymd;
+            this.ItemCode = ItemCode;
+            this.Message = "마스터 시그널 가져옵니다.";
+        }
+    }
+
+    public class OnReceiveConditionVerEventArgs : EventArgs
+    {
+        public List<Condition> ConditionItemList { get; set; }
+        public string Message { get; set; }
+
+        public OnReceiveConditionVerEventArgs(List<Condition> conditionItemList)
+        {
+            this.ConditionItemList = conditionItemList;
+            this.Message = "조건검색식 리스트를 가져옵니다.";
+        }
+    }
+
+    public class OnReceiveConditionItemListEventArgs : EventArgs
+    {
+        public ConditionItemList ConditionItemList { get; set; }
+        public string Message { get; set; }
+
+        public OnReceiveConditionItemListEventArgs(ConditionItemList conditionItemList)
+        {
+            this.ConditionItemList = conditionItemList;
+            this.Message = "조건 종목 리스트를 가져옵니다.";
+        }
+    }
+
+    public class OnReceiveConditionItemEventArgs : EventArgs
+    {
+        public ConditionItem conditionItem { get; set; }
+        public string Message { get; set; }
+        public OnReceiveConditionItemEventArgs(ConditionItem conditionItem)
+        {
+            this.conditionItem = conditionItem;
+            this.Message = "조건 종목을 가져옵니다.";
+        }
+    }
+
 }
